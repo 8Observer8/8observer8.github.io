@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+     <title>-Light Speed Ready-</title>
+<link href='http://fonts.googleapis.com/css?family=Audiowide' rel='stylesheet' type='text/css'>
+	 <link rel="stylesheet" href="style/ScreenLayout.css" type="text/css" charset="utf-8">
+     <script type="text/javascript" src="js/babylon.1.8.5.js"></script>
+	 <link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
+
+</head>
+
+<body>
+	
+	<div class="dir" id="dir">test</div>
+	<div class="topLeft mainFont"><div id="Resources">0</div></div>
+	
+	<div id="TitleScreen">
+		<div class="titlecenter">
+			<img src="images/title.png" width="600" height="300" alt="Title">
+			<div class="mainFontSmall"><div class="mainFont" id="loadingMessage">Loading...</div><div id="gameStart"><button class="mainFont" onmouseup="StartGame();">--New Game--</button></div>
+				<div><br>Developed by <a href="http://twitter.com/xanmia">@Xanmia</a><br>Asteroid models by Seraphz</div>
+		   </div>
+	   </div>
+	   		<div class="mainFontSmall">Powered by <a href="http://www.babylonjs.com/">BabylonJS</a></div>
+	</div>
+	
+	<div class="topMiddle mainFont">Light Speed Gauge<div class="gauge"><div class="statusGaugeInside" id="lightspeedGauge"></div></div>
+	</div> <div id="lightSpeedReminder" class="mainFontSmallMid">---Press (R)---</div>
+	<div class="mainFontLarge" id="lightSpeedReady"> Light Speed Ready! <div class="mainFont"> Press (R) for the next level </div></div>
+	<div class="topUnderMiddle mainFontLarge" id="LevelUp"> <div id="levelNumber">LEVEL</div> <div class="mainFont"> Congratulations! You Leveled Up! </div><div id="levelUpDetails" class="mainFontSmall"> + Health + Damage</div></div>
+	<div class="bottomMiddle mainFont">Health<div class="largeGauge"><div class="statusGaugeInside" id="healthGauge"></div></div></div>
+	<div class="center mainFontLarge" id="deadScreen">You're DEAD<div class="mainFont"><button class="mainFont" onmouseup="StartGame();">--New Game--</button></div></div>
+	<div class="center mainFontLarge" id="pauseScreen">Paused<br><button class="mainFont" onmouseup="PauseGame(false);">--Resume--</button></div>
+	
+	<div class="bottomRight mainFontLarge"><div id="level"></div></div>
+          <canvas id="viewport"></canvas>
+		  <a href="https://github.com/Xanmia/Light-Speed-Ready"><img style="position: absolute; top: 0; right: 0; border: 0;  z-index:6;" src="https://github-camo.global.ssl.fastly.net/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a>
+
+</body>
+<script src="js/content.js" type="text/javascript" ></script>
+<script src="js/enemies.js" type="text/javascript" ></script>
+<script src="js/enemy.js" type="text/javascript" ></script>
+<script src="js/actions.js" type="text/javascript" ></script>
+<script src="js/action.js" type="text/javascript" ></script>
+<script src="js/levels.js" type="text/javascript" ></script>
+<script src="js/levelingDefs.js" type="text/javascript" ></script>
+<script src="js/utils.js" type="text/javascript"></script>
+<script src="js/sound.js" type="text/javascript"></script>
+
+       <script type="text/javascript">
+    var loaded = false, pause = false;
+	var level = 0, healthIncrease=5;
+	var up, down, left, right;
+	 var adjmovement =1, fulldirectiontest;
+	 var playingBoardSize = 500;
+	 var height = playingBoardSize+200, width = playingBoardSize +(200 * (window.innerWidth/window.innerHeight));// additional for camera extend - fullsize of board
+     var movex=0, movez=0, movey=0, particleSystem, enemies=[], playerGraphic,explosionSystem, engine, camera, time,scene, light0, skybox, skyboxMaterial;
+	 var player, playerStats, rock, rock2, cup, enemyexplosion,bulletobj,box, lastSetup, xpmessage, particleTexture;
+    
+	 var canvas = document.getElementById("viewport");
+	 var lightSpeedGauge  = document.getElementById('lightspeedGauge');
+	 var ResourcesText  = document.getElementById('Resources');
+	 var HealthGauge  = document.getElementById('healthGauge');
+	 var levelScreen  = document.getElementById('nextLevelScreen');
+	 var LevelText  = document.getElementById('level');
+	 var StatusText  = document.getElementById('dir');
+	 var DeathScreen = document.getElementById('deadScreen');
+	 var LevelNumberView = document.getElementById('levelNumber');
+	 var LevelUpMessage = document.getElementById('LevelUp');
+	 var LevelUpDetails = document.getElementById('levelUpDetails');
+	 var LightSpeedMessage = document.getElementById('lightSpeedReady');
+	 var lightSpeedReminder = document.getElementById('lightSpeedReminder');
+	 var titleScreen = document.getElementById('TitleScreen');
+	 var loadingMessage = document.getElementById('loadingMessage');
+	 var pausedMessage = document.getElementById('pauseScreen');
+	   
+	ContentLoad(document.getElementById('gameStart'));
+
+	function SceneReset()
+	{
+		SpawnEnemies();
+		
+		camera.radius = 500;
+		LevelText.innerHTML = level;
+	    camera.target = player.cameraFollower.position;
+		player.reset();
+
+	}
+	
+	function StartGame(){
+	    player = new Player();
+		level = 0;
+		DeathScreen.style.display = "none";
+		titleScreen.style.display = "none";
+		SceneReset();
+		loaded = true;
+	}
+	
+	////move to own file
+	function Player(){
+		this.shipLevel = 0;
+		this.currentLevelStats = levelingDefs[ this.shipLevel ];
+		this.actions = [];
+		this.LightSpeedGauge =0;
+		this.Resources = 0;
+		this.status = true;
+		this.LightSpeedGaugeCapacity = 100;
+		this.health = this.currentLevelStats.health;
+		this.maxHealth = this.currentLevelStats.health;
+		this.speed = this.currentLevelStats.speed;
+		this.bulletSpeed = 2;
+		this.bulletDamage = this.currentLevelStats.damage;
+		var bulletsshot = 0;
+	    this.currentDirection = "left";
+		this.bullet = [];
+
+		lightSpeedGauge.style.width = 0;
+		HealthGauge.style.width = "100%"; 
+		
+		this.BoundingBox = BABYLON.Mesh.CreateBox("Player", 13.0, scene);
+		this.cameraFollower = BABYLON.Mesh.CreateBox("cameraFollower", 1.0, scene);
+   	  	var material = new BABYLON.StandardMaterial("texture1", scene);
+        material.wireframe = true;
+		this.BoundingBox.material = material;
+		this.BoundingBox.isVisible = false;
+		this.cameraFollower.isVisible = false;
+		this.Graphic = playerGraphic;
+	
+		this.actions.push(new action( actionsDEF[ 3 ] ));	
+		
+      jetSystem = new BABYLON.ParticleSystem("jetstream", 25, scene);
+      jetSystem.particleTexture = new BABYLON.Texture("images/Flare.png", scene);
+      jetSystem.emitter = this.Graphic; 
+      jetSystem.minEmitBox = new BABYLON.Vector3(-100, 100, 700);
+      jetSystem.maxEmitBox = new BABYLON.Vector3(100, 100, 800); 
+      jetSystem.color1 = new BABYLON.Color4(0.4, 0.8, 1.0, 1.0);
+      jetSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+      jetSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+      jetSystem.minSize = 10.0;
+      jetSystem.maxSize = 15.5;
+      jetSystem.minLifeTime = 0.01;
+      jetSystem.maxLifeTime = .20;
+      jetSystem.emitRate = 150;
+      jetSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+      jetSystem.direction1 = new BABYLON.Vector3(-6, 8, 3);
+      jetSystem.direction2 = new BABYLON.Vector3(6, 8, -3);
+      jetSystem.targetStopDuration = 0;
+      jetSystem.minEmitPower = 1;
+      jetSystem.maxEmitPower = 3;
+      jetSystem.updateSpeed = 0.005;
+      jetSystem.disposeOnStop = false;
+      jetSystem.start();
+	  
+	 
+	  this.levelUp = function(){
+		  this.shipLevel += 1;
+		   GameSound.play("levelup");
+		  LevelNumberView.innerHTML = "LEVEL " + this.shipLevel;
+		  LevelUpMessage.style.opacity = 1;
+		  
+		  this.currentLevelStats = levelingDefs[ this.shipLevel ];
+		  LevelUpDetails.innerHTML = "";
+		  if(this.speed<this.currentLevelStats.speed){LevelUpDetails.innerHTML += " + Ship Speed";}
+		  if(this.health<this.currentLevelStats.health){LevelUpDetails.innerHTML += " + Health";}
+		  if(this.bulletDamage<this.currentLevelStats.damage){LevelUpDetails.innerHTML += " + Damage";}
+		  this.speed = this.currentLevelStats.speed;
+		  this.health = this.currentLevelStats.health;
+		  this.maxHealth = this.currentLevelStats.health;
+		  this.bulletDamage = this.currentLevelStats.damage;
+		  
+		  HealthGauge.style.width = ((this.health / this.maxHealth)*100) + "%"; 
+	  }
+
+	  this.reset = function(){
+  		this.LightSpeedGauge = 0;
+	
+  		this.health = player.maxHealth;
+		lightSpeedReminder.style.display = "none";
+  		HealthGauge.style.width = ((this.health / this.maxHealth)*100) + "%"; 
+  		this.BoundingBox.position = new BABYLON.Vector3(0,0,0);
+  		this.Graphic.position = new BABYLON.Vector3(0,0,0);
+  	 	this.Graphic.rotation.x = 0; 
+       	this.Graphic.rotation.y = 0;
+  		this.currentDirection = "left";
+  		movex=0, movez=0, movey=0;
+		this.status = true;
+		this.Graphic._isEnabled = true;
+	  }
+
+	this.explode = function(){
+		this.status= false;
+			if (this.Graphic._isEnabled == true){
+		 	   GameSound.play("playerexplode");
+				var totalB = this.bullet.length;
+				while(totalB--){
+					this.bullet[totalB].graphic.dispose();
+				}
+				this.bullet = [];
+			this.Graphic.isVisible = false;
+			this.Graphic._isEnabled = false;
+            explosionSystem = new BABYLON.ParticleSystem("particlesexplode", 2000, scene);
+           explosionSystem.particleTexture = particleTexture;//new BABYLON.Texture("images/Flare.png", scene);
+        explosionSystem.emitter = this.BoundingBox; 
+        explosionSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0); 
+        explosionSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0);
+        explosionSystem.color1 = new BABYLON.Color4(0.4, 0.8, 1.0, 1.0);
+        explosionSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+        explosionSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+        explosionSystem.minSize = 6.0;
+        explosionSystem.maxSize = 7.5;
+        explosionSystem.minLifeTime = 0.15;
+        explosionSystem.maxLifeTime = 1.15;
+        explosionSystem.emitRate = 50000;
+        explosionSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+        explosionSystem.gravity = new BABYLON.Vector3(0, -9.81, 0);
+        explosionSystem.direction1 = new BABYLON.Vector3(-8, 8, 8);
+        explosionSystem.direction2 = new BABYLON.Vector3(8, 8, -8);
+        explosionSystem.minAngularSpeed = 0;
+        explosionSystem.maxAngularSpeed = Math.PI;
+        explosionSystem.targetStopDuration = .1;
+        explosionSystem.minEmitPower = 1;
+        explosionSystem.maxEmitPower = 100;
+        explosionSystem.updateSpeed = 0.005;
+        explosionSystem.disposeOnStop = false;
+        explosionSystem.start();
+		DeathScreen.style.display = "block";
+	    ////show you died and request reset/start over
+	}
+			
+		}
+		
+		this.Damage = function(intDamage)
+		{
+				/////TODO: damage animation
+			if(this.status == true){
+				 GameSound.play("playerhit");
+				this.health -= intDamage;
+				HealthGauge.style.width = ((this.health / this.maxHealth)*100) + "%"; 
+			}
+		 if(this.health <= 0){
+			 HealthGauge.style.width =  "0%"; 
+			 this.explode();
+		 } 
+	 
+		}
+		
+		this.JumpToLightSpeed = function(){
+
+		    if(this.LightSpeedGauge >= this.LightSpeedGaugeCapacity && this.health > 0 && this.status == true){
+		
+				this.status = false;
+	
+				var totalB = this.bullet.length;
+				while(totalB--){
+  					//this.bullet[totalB].particle.stop();
+					//this.bullet[totalB].particle.dispose();
+					this.bullet[totalB].graphic.dispose();
+					
+				}
+				this.bullet=[];
+				movex=0;
+				movez=0;
+
+		  	    this.Graphic.position.y += -100;
+		  	    this.BoundingBox.position.y +=-100
+				    camera.target = player.BoundingBox.position;
+		        var cameramovein = new BABYLON.Animation("cameraMove", "radius", 80, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+		                                                                        BABYLON.Animation.ANIMATIONLOOPMODE_LOOP);
+		        var Camerakeys = [];
+		        Camerakeys.push({
+		            frame: 0,
+		            value: camera.radius
+		        });
+		        Camerakeys.push({
+		            frame: 50,
+		            value: 50
+		        });
+		        Camerakeys.push({
+		            frame: 100,
+		            value: 25
+		        });
+		        cameramovein.setKeys(Camerakeys);
+		    	camera.animations.push(cameramovein);
+		        GameSound.play("LSstart");
+			 	this.Graphic.rotation.x = Math.PI + (Math.PI/2); 
+		     	this.Graphic.rotation.y = (Math.PI/2); 
+				scene.beginAnimation(camera, 0, 100, false, 0, function(){
+			        var shiplightspeedMove = new BABYLON.Animation("shiplightspeedMove", "position.y", 40, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+			                                                                        BABYLON.Animation.ANIMATIONLOOPMODE_LOOP);
+			        var shipkeys = [];
+			        shipkeys.push({
+			            frame: 0,
+			            value: player.Graphic.position.y
+			        });
+			        shipkeys.push({
+			            frame: 25,
+			            value: player.Graphic.position.y - 1000
+			        });
+			        shipkeys.push({
+			            frame: 100,
+			            value: player.Graphic.position.y - 13000
+			        });
+			        shiplightspeedMove.setKeys(shipkeys);
+			    	player.Graphic.animations.push(shiplightspeedMove);
+                    GameSound.play("LSgo");
+					scene.beginAnimation(player.Graphic, 0, 100, false, 0, function(){
+						level +=1;
+						SceneReset();
+					});
+			
+				});	
+		    }
+		}
+		
+		this.addResources = function(resAmount){
+			var amount = resAmount;
+			this.Resources += resAmount;
+			
+		    if (this.LightSpeedGauge < this.LightSpeedGaugeCapacity){
+				amount = (this.LightSpeedGauge + amount > this.LightSpeedGaugeCapacity) ? (this.LightSpeedGaugeCapacity - this.LightSpeedGauge) : amount;
+		    	this.LightSpeedGauge += 5;//amount;
+				resAmount -= amount;
+				if (this.LightSpeedGauge >= this.LightSpeedGaugeCapacity){
+					GameSound.play("lightspeedready");
+					LightSpeedMessage.style.opacity = 1;
+					lightSpeedReminder.style.display = "block";
+				}
+			}	
+				
+		}
+		
+		this.update = function(){	
+
+		 if(player.status == false){return;}
+	   		 if(this.health <= 0){
+	   			 this.explode();
+				 return;
+	   		 } 
+			 LevelUpMessage.style.opacity -= .004;	
+			 LightSpeedMessage.style.opacity -= .01;
+			 
+			var nextlvlneed = levelingDefs[ this.shipLevel+1 ].need;
+				if( this.Resources >= nextlvlneed){
+					this.levelUp();
+				}
+	////////////player movement
+			if (up && right){
+				this.Graphic.rotation.y = Math.PI*.75; //up-and-right
+				this.currentDirection = "upright";
+			}
+			else if (up && left){
+				 this.Graphic.rotation.y = Math.PI/4; //up-and-left
+				 this.currentDirection = "upleft";
+			}
+			else if (down && right){
+				this.Graphic.rotation.y = Math.PI *1.25; //down-and-right
+				 this.currentDirection = "downright";
+			}
+			else if (down && left){
+				 this.Graphic.rotation.y = Math.PI*1.75; //down and left
+				  this.currentDirection = "downleft";
+			}
+			else if (up){
+	            this.Graphic.rotation.y = Math.PI/2; 
+				this.currentDirection = "up";
+			}
+			else if (down){
+	            this.Graphic.rotation.y = Math.PI*1.5; 
+				this.currentDirection = "down";
+			}
+			else if (left){
+	            this.Graphic.rotation.y = 0; 
+				this.currentDirection = "left";
+			}
+			else if (right){
+	            this.Graphic.rotation.y = Math.PI; 
+				this.currentDirection = "right";
+			}
+   			movez = Math.cos( Math.PI + this.Graphic.rotation.y ) * (this.speed*adjmovement);//this.speed*adjmovement; // need stat on player object
+   		 	movex = Math.sin( Math.PI + this.Graphic.rotation.y ) * (this.speed*adjmovement);//0;
+	/////////////////////////
+
+	//////////Bound player inside sky box need width height of window for bounding
+			  if((this.Graphic.position.x + movex > height || this.Graphic.position.x + movex < -height) || (this.Graphic.position.z + movez > width || this.Graphic.position.z + movez < -width)){
+				 movez = 0;
+				 movex = 0;
+			  }
+			  if(this.Graphic.position.x + movex < playingBoardSize && this.Graphic.position.x + movex > -playingBoardSize) { ///500
+			  	 this.cameraFollower.position.x = this.Graphic.position.x+movex;
+			  }
+			  if (this.Graphic.position.z + movez < playingBoardSize && this.Graphic.position.z + movez > -playingBoardSize){ //500
+	 			 this.cameraFollower.position.z = this.Graphic.position.z+movez;
+			  }
+			 this.Graphic.position.z += movez;
+			 this.Graphic.position.x += movex;
+			 this.BoundingBox.position.x = this.Graphic.position.x;
+			 this.BoundingBox.position.z = this.Graphic.position.z;
+	//////////////////////
+	/////////TODO: move outside update/////
+		    lightSpeedGauge.style.width = ((this.LightSpeedGauge / this.LightSpeedGaugeCapacity)*100) + "%";
+			ResourcesText.innerHTML = "Current Ship Level:" + this.shipLevel + " <br/> Next Level:" + this.Resources + "/" + nextlvlneed;
+	/////////////////////////////////			
+			var activeActions = this.actions.length;
+			while(activeActions--){
+				this.actions[activeActions].update();
+			}
+			
+	//////player bullet movement///////	
+			var totalB = this.bullet.length;
+			while(totalB--){
+			
+		  		this.bullet[totalB].graphic.position.x += Math.sin( Math.PI + this.bullet[totalB].direction ) * ((this.speed*adjmovement)+ (this.bulletSpeed * adjmovement));
+		  		this.bullet[totalB].graphic.position.z += Math.cos( Math.PI + this.bullet[totalB].direction ) * ((this.speed*adjmovement)+ (this.bulletSpeed * adjmovement));
+
+		////////////////////////////////////
+		/////////bullet disposal///////////		
+				if (this.bullet[totalB].graphic.position.z > width+50 || this.bullet[totalB].graphic.position.z < -width-50 || this.bullet[totalB].graphic.position.x > height+50 || this.bullet[totalB].graphic.position.x < -height-50)
+				{
+  					//this.bullet[totalB].particle.stop();
+					//this.bullet[totalB].particle.dispose();
+					this.bullet[totalB].graphic.dispose();
+					this.bullet.splice(totalB, 1);
+				}
+		////////////////////////////////////		
+		  }
+		}
+		
+	}
+
+	scene.registerBeforeRender(function() {
+  	  time= time+(1/BABYLON.Tools.GetFps());  
+  	 // StatusText.innerHTML = scene.getActiveParticles();// BABYLON.Tools.GetFps().toFixed() + " FPS";
+  	  adjmovement = scene.getAnimationRatio();
+	  
+  	  if( loaded==true && pause == false ){
+  		 player.update();
+
+  		  /////////check for collisions/////////////////////
+  	  	enemiesCount = enemies.length;
+  	  	while(enemiesCount--){
+  			enemies[enemiesCount].update();
+			if(player.status == true){
+			enemyChildren = enemies[enemiesCount].enemy.getChildren();
+  			bulletCount = player.bullet.length;
+  		  	while(bulletCount--){
+			 if(enemies[enemiesCount].enemy.isVisible==true && player.bullet[bulletCount].graphic.isVisible==true){
+  				if(enemies[enemiesCount].enemy.intersectsMesh(player.bullet[bulletCount].graphic,true)){
+
+  				  	enemies[enemiesCount].Damage(player.bullet[bulletCount].damage)
+  					//player.bullet[bulletCount].particle.stop();
+					//player.bullet[bulletCount].particle.dispose();
+  					player.bullet[bulletCount].graphic.isVisible = false; 
+  					player.bullet[bulletCount].graphic.dispose();
+  					player.bullet.splice(bulletCount, 1);
+  				  }
+				  /*
+				  if(enemyChildren.length > 0)
+				  {
+	    				if(enemyChildren[0].intersectsMesh(player.bullet[bulletCount].graphic,true) || enemyChildren[1].intersectsMesh(player.bullet[bulletCount].graphic,true) ){
+	    				  	enemies[enemiesCount].Damage(player.bullet[bulletCount].damage)
+	    					player.bullet[bulletCount].graphic.isVisible = false; 
+	    					player.bullet[bulletCount].graphic.dispose();
+	    					player.bullet.splice(bulletCount, 1);
+	    				  }
+				  }
+				  */
+  			  	}
+  		  	}
+  		  	if(player.BoundingBox.intersectsMesh(enemies[enemiesCount].enemy,true)==true)
+  		  	{
+  				if(enemies[enemiesCount].enemy.isVisible == true){
+  					player.Damage(enemies[enemiesCount].maxHealth/2);
+  				 	enemies[enemiesCount].Damage(player.maxHealth/2);
+  				}
+  		  	}
+		  }
+  		}
+  	  	////////////////////complete collisions/////////////
+    	 }
+		
+		
+	});
+
+  engine.runRenderLoop(function () {
+	   StatusText.innerHTML = scene.getActiveParticles();// BABYLON.Tools.GetFps().toFixed() + " FPS";
+    scene.render();
+  });
+
+
+   document.onkeydown = handleKeyDown;
+   document.onkeyup = handleKeyUp;
+
+  function handleKeyUp(event){
+	if(loaded){
+      if(event.keyCode == 68 || event.keyCode == 39){
+  		 right = false;
+		 //console.log("right");
+      }
+      if(event.keyCode == 65 || event.keyCode == 37){
+		 // console.log("left");
+  		 left = false;
+      }
+     if(event.keyCode == 87 || event.keyCode == 38){
+		 //console.log("up");
+  		 up = false;
+      }
+      if(event.keyCode == 83 || event.keyCode == 40){
+		 // console.log("down");
+  		 down = false;
+      }
+  	}
+  }
+
+  function handleKeyDown(event) {
+   if(loaded){
+    if(event.keyCode == 68 || event.keyCode == 39){
+      if(loaded==true){
+		 right = true;
+      }
+    }
+    if(event.keyCode == 65 || event.keyCode == 37){
+      if(loaded==true){
+		 left = true;
+      }
+    }
+   if(event.keyCode == 87 || event.keyCode == 38){
+      if(loaded==true){
+		 up = true;
+      }
+    }
+    if(event.keyCode == 83 || event.keyCode == 40){
+      if(loaded==true){
+		 down = true;
+      }
+  	}
+  
+  	if(event.keyCode == 82){
+	  player.JumpToLightSpeed();
+  	}
+	
+	if (event.keyCode == 80){
+		PauseGame(!pause)
+	}
+
+   }
+  }	
+  window.onblur = function() {
+	  if(loaded){
+	  	PauseGame(true)
+	  }
+
+  };
+  
+  function PauseGame(status)
+  {
+	if(player.status == true){
+		pause = status;
+		if(pause) {pausedMessage.style.display = "block";}
+		else if (!pause){pausedMessage.style.display = "none";}
+	}
+  }
+
+       </script>
+</html>
