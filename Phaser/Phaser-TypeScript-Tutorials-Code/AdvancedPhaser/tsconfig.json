@@ -1,0 +1,16 @@
+{
+    "files": [
+        "src/scripts/Boot.ts",
+        "src/scripts/Game.ts",
+        "src/scripts/Level1.ts",
+        "src/scripts/MainMenu.ts",
+        "src/scripts/Player.ts",
+        "src/scripts/Preloader.ts",
+        "src/scripts/Player.ts"
+    ],
+    "compilerOptions": {
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "target": "es5"
+    }
+}
