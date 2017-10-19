@@ -173,7 +173,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement0.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement0.json', function (geometry, materials)
     {
         roofElement0 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement0);
@@ -181,7 +181,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement1.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement1.json', function (geometry, materials)
     {
         roofElement1 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement1);
@@ -189,7 +189,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement2.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement2.json', function (geometry, materials)
     {
         roofElement2 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement2);
@@ -197,7 +197,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement3.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement3.json', function (geometry, materials)
     {
         roofElement3 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement3);
@@ -205,7 +205,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement4.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement4.json', function (geometry, materials)
     {
         roofElement4 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement4);
@@ -213,7 +213,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement5.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement5.json', function (geometry, materials)
     {
         roofElement5 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement5);
@@ -221,7 +221,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement6.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement6.json', function (geometry, materials)
     {
         roofElement6 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement6);
@@ -229,7 +229,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement7.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement7.json', function (geometry, materials)
     {
         roofElement7 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement7);
@@ -237,7 +237,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement8.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement8.json', function (geometry, materials)
     {
         roofElement8 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement8);
@@ -245,7 +245,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement9.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement9.json', function (geometry, materials)
     {
         roofElement9 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement9);
@@ -253,7 +253,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement10.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement10.json', function (geometry, materials)
     {
         roofElement10 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement10);
@@ -261,7 +261,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement11.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement11.json', function (geometry, materials)
     {
         roofElement11 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement11);
@@ -269,7 +269,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement12.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement12.json', function (geometry, materials)
     {
         roofElement12 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement12);
@@ -277,7 +277,7 @@ function init()
         tryToRunAnimate();
     });
 
-    loader.load('./models/RoofElement13.json', function (geometry, materials)
+    loader.load('./models/roofElements/roofElement13.json', function (geometry, materials)
     {
         roofElement13 = new THREE.Mesh(geometry, materials);
         scene.add(roofElement13);
