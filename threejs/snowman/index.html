@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Snowman in Three.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.min.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        function createScene()
+        {
+            var renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setClearColor(new THREE.Color(0x00bfff));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            renderer.shadowMapEnabled = true;
+
+            var scene = new THREE.Scene();
+
+            var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight);
+            camera.position.set(2, 2, 6.5);
+            scene.add(camera);
+
+            var orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+            orbitControls.target.set(1.2, 1, 0);
+
+            var light = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(light);
+
+            var light2 = new THREE.DirectionalLight(0xffffff, 1);
+            light2.position.set(3, 2, 3);
+            light2.castShadow = true;
+            scene.add(light2);
+
+            var groundGeometry = new THREE.PlaneGeometry(60, 40, 1, 1);
+            var groundMaterial = new THREE.MeshPhongMaterial({ color: 0xcccccc });
+            var ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -90 * Math.PI / 180;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            function render()
+            {
+                orbitControls.update();
+                renderer.render(scene, camera);
+                requestAnimationFrame(render);
+            }
+            render();
+
+            return scene;
+        }
+
+        function drawSnowman(x, y, z, scene)
+        {
+            var bodyRadius = 1;
+            var body = new THREE.Mesh(new THREE.SphereGeometry(bodyRadius, 16, 16), new THREE.MeshPhongMaterial());
+            body.position.set(x, y + bodyRadius, z);
+            body.castShadow = true;
+            body.receiveShadow = true;
+            scene.add(body);
+
+            var headRadius = 0.5;
+            var head = new THREE.Mesh(new THREE.SphereGeometry(headRadius, 16, 16), new THREE.MeshPhongMaterial());
+            head.position.set(x, y + bodyRadius * 2 + headRadius - headRadius / 5, z);
+            head.castShadow = true;
+            head.receiveShadow = true;
+            scene.add(head);
+
+            var noseHeight = 0.5;
+            var nose = new THREE.Mesh(new THREE.ConeGeometry(0.2, 1, 16), new THREE.MeshPhongMaterial({ color: 0xffa500 }));
+            nose.position.set(x, head.position.y, z + headRadius);
+            nose.rotation.x = 90 * Math.PI / 180;
+            nose.castShadow = true;
+            nose.receiveShadow = true;
+            scene.add(nose);
+
+            var eyeRadius = 0.07;
+            var eyeAngle = 35;
+
+            var leftEye = new THREE.Mesh(new THREE.SphereGeometry(eyeRadius), new THREE.MeshPhongMaterial({ color: 0x000000 }));
+            leftEye.position.set(
+                x + headRadius * Math.sin(THREE.Math.degToRad(eyeAngle)) * Math.cos(THREE.Math.degToRad(eyeAngle)),
+                headRadius * Math.sin(THREE.Math.degToRad(eyeAngle)) * Math.sin(THREE.Math.degToRad(eyeAngle)) + head.position.y,
+                z + headRadius * Math.cos(THREE.Math.degToRad(eyeAngle)));
+            scene.add(leftEye);
+
+            var rightEye = new THREE.Mesh(new THREE.SphereGeometry(eyeRadius), new THREE.MeshPhongMaterial({ color: 0x000000 }));
+            rightEye.position.set(
+                x + headRadius * Math.sin(THREE.Math.degToRad(-eyeAngle)) * Math.cos(THREE.Math.degToRad(-45)),
+                headRadius * Math.sin(THREE.Math.degToRad(-eyeAngle)) * Math.sin(THREE.Math.degToRad(-eyeAngle)) + head.position.y,
+                z + headRadius * Math.cos(THREE.Math.degToRad(-eyeAngle)));
+            scene.add(rightEye);
+
+            var buttonRadius = 0.1;
+            var buttonAngle = 25;
+
+            var button0 = new THREE.Mesh(new THREE.SphereGeometry(buttonRadius), new THREE.MeshPhongMaterial({ color: 0x000000 }));
+            button0.position.set(
+                x,
+                bodyRadius * Math.sin(THREE.Math.degToRad(buttonAngle)) + body.position.y,
+                z + bodyRadius * Math.cos(THREE.Math.degToRad(buttonAngle)));
+            scene.add(button0);
+
+            var button1 = new THREE.Mesh(new THREE.SphereGeometry(buttonRadius), new THREE.MeshPhongMaterial({ color: 0x000000 }));
+            button1.position.set(
+                x,
+                body.position.y,
+                z + bodyRadius);
+            scene.add(button1);
+
+            var button2 = new THREE.Mesh(new THREE.SphereGeometry(buttonRadius), new THREE.MeshPhongMaterial({ color: 0x000000 }));
+            button2.position.set(
+                x,
+                bodyRadius * Math.sin(THREE.Math.degToRad(-buttonAngle)) + body.position.y,
+                z + bodyRadius * Math.cos(THREE.Math.degToRad(-buttonAngle)));
+            scene.add(button2);
+        }
+
+        var scene = createScene();
+
+        drawSnowman(0, 0, 0, scene);
+        drawSnowman(2.5, 0, 1.5, scene);
+    </script>
+</body>
+
+</html>
