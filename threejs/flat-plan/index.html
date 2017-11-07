@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+
+    <title>Flat Plan in 3D</title>
+
+    <script src="./libs/three.min.js"></script>
+    <script src="./libs/OrbitControls.js"></script>
+    <script src="./js/main.js"></script>
+
+    <link rel="stylesheet" href="./css/main.css" type="text/css" />
+</head>
+<body>
+    <div class="canvas-container">
+        <div id="renderCanvas"></div>
+        <img id="imgPlan" src="images/plan.jpg" width="252" height="235" />
+    </div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+        <!-- The Close Button -->
+        <span class="close" onclick="document.getElementById('myModal').style.display='none'">&times;</span>
+
+        <!-- Modal Content (The Image) -->
+        <img class="modal-content" id="img01">
+
+        <!-- Modal Caption (Image Text) -->
+        <div id="caption"></div>
+    </div>
+</body>
+</html>
