@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>View Selector</title>
+
+    <style>
+        body {
+            overflow: hidden;
+            padding: 0;
+        }
+
+        #threeJSContainer {
+            margin: auto;
+            position: relative;
+            top: 10px;
+            width: 640px;
+            height: 480px;
+        }
+
+        #insetContainer {
+            width: 150px;
+            height: 150px;
+            background-color: #fff;
+            /* or transparent; will show through only if renderer alpha: true */
+            border: 1px solid black;
+            /* or none; */
+            margin: 20px;
+            padding: 0px;
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            z-index: 100;
+        }
+    </style>
+
+    <script src="./libs/three.min.js"></script>
+    <script src="./libs/Tween.js"></script>
+    <script src="./js/view-selector.min.js"></script>
+</head>
+
+<body>
+    <div id="threeJSContainer">
+        <div id="insetContainer"></div>
+    </div>
+</body>
+
+</html>
