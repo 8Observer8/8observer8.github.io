@@ -15,13 +15,13 @@
             margin: auto;
             position: relative;
             top: 10px;
-            width: 640px;
-            height: 480px;
+            width: 800px;
+            height: 600px;
         }
 
-        #insetContainer {
-            width: 150px;
-            height: 150px;
+        #insetCanvas {
+            width: 200px;
+            height: 200px;
             background-color: #fff;
             /* or transparent; will show through only if renderer alpha: true */
             border: 1px solid black;
@@ -37,12 +37,13 @@
 
     <script src="./libs/three.min.js"></script>
     <script src="./libs/Tween.js"></script>
+    <script src="./js/input.min.js"></script>
     <script src="./js/view-selector.min.js"></script>
 </head>
 
 <body>
     <div id="threeJSContainer">
-        <div id="insetContainer"></div>
+        <canvas id="insetCanvas"></canvas>
     </div>
 </body>
 

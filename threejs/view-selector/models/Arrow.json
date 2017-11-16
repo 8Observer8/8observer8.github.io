@@ -1,0 +1,15 @@
+{
+    "faces":[32,0,1,2,0,0,0],
+    "normals":[0,-4.37114e-08,-1],
+    "vertices":[-0.5,-0.333333,1.45705e-08,0,0.666667,-2.91409e-08,0.5,-0.333333,1.45705e-08],
+    "uvs":[],
+    "metadata":{
+        "normals":1,
+        "uvs":0,
+        "version":3,
+        "vertices":3,
+        "faces":1,
+        "type":"Geometry",
+        "generator":"io_three"
+    }
+}
