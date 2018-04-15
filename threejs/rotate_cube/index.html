@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Rotated Cube</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/16.3.5/Tween.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li>
+            <a href="#" onclick="aroundYAntiClockwise();">Around Y, anti-clockwise</a>
+        </li>
+        <li>
+            <a href="#" onclick="aroundYClockwise();">Around Y, clockwise</a>
+        </li>
+    </ul>
+    <script>
+        var eRotation = Object.freeze({
+            eYAntiClockwise: 0,
+            eYClockwise: 1
+        });
+        var scene = new THREE.Scene();
+        var canvasWidth = 500;
+        var canvasHeight = 500;
+        var inRotatingProcess = false;
+
+        var renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(canvasWidth, canvasHeight);
+        document.body.appendChild(renderer.domElement);
+
+        var camera = new THREE.PerspectiveCamera(55, canvasWidth / canvasHeight, 0.1, 1000);
+        camera.position.set(1.1, 1.1, 1.1);
+        // camera.position.x = 3;
+        // camera.position.y = 3;
+        // camera.position.z = 3;
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.x = 1;
+        directionalLight.position.y = 5;
+        directionalLight.position.z = 2;
+        scene.add(directionalLight);
+
+        var ambientLight = new THREE.AmbientLight(0xdddddd);
+        scene.add(ambientLight);
+
+        var geometry = new THREE.BoxGeometry(1, 1, 1);
+        var material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+        var cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        var tween = null;
+
+        animate();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // cube.rotation.x += 0.01;
+            // cube.rotation.y += 0.01;
+            if (tween !== undefined) {
+                TWEEN.update();
+            }
+
+
+            renderer.render(scene, camera);
+        };
+
+        function runRotation(rotation) {
+            var ry_start = 0, ry_end = 0;
+            inRotatingProcess = true;
+            switch (rotation) {
+                case eRotation.eYAntiClockwise:
+                    ry_start = THREE.Math.radToDeg(cube.rotation.y);
+                    ry_end = ry_start + 90;
+                    break;
+                case eRotation.eYClockwise:
+                    ry_start = THREE.Math.radToDeg(cube.rotation.y);
+                    ry_end = ry_start - 90;
+                    break;
+            }
+
+            tween = new TWEEN.Tween({ ry: ry_start })
+            .to({ ry: ry_end }, 1000)
+            .onUpdate(function() {
+                cube.rotation.y = THREE.Math.degToRad(this.ry);
+            })
+            .onComplete(function() {
+                inRotatingProcess = false;
+            })
+            .start();
+        }
+
+        function aroundYAntiClockwise() {
+            if (inRotatingProcess) return;
+            runRotation(eRotation.eYAntiClockwise);
+        }
+
+        function aroundYClockwise() {
+            if (inRotatingProcess) return;
+            runRotation(eRotation.eYClockwise);
+        }
+    </script>
+</body>
+
+</html>
