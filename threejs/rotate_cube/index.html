@@ -12,17 +12,54 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/16.3.5/Tween.min.js"></script>
 
     <style>
+        html,
         body {
             margin: 0;
+            background: #efefef;
+            overflow: hidden;
         }
 
         li {
             margin: 5px 50px;
         }
+
+        #x {
+            font-size: 2em;
+            position: absolute;
+            top: 430px;
+            width: 100%;
+            left: 340px;
+            z-index: 100;
+            display: block;
+        }
+
+        #y {
+            font-size: 2em;
+            position: absolute;
+            top: 200px;
+            width: 100%;
+            left: 210px;
+            z-index: 100;
+            display: block;
+        }
+
+        #z {
+            font-size: 2em;
+            position: absolute;
+            top: 430px;
+            width: 100%;
+            left: 40px;
+            z-index: 100;
+            display: block;
+        }
     </style>
 </head>
 
 <body>
+    <div id="x">x</div>
+    <div id="y">y</div>
+    <div id="z">z</div>
+
     <ul>
         <li>
             <a href="#" onclick="aroundXAntiClockwise();">Around X, anti-clockwise</a>
@@ -46,6 +83,16 @@
         </li>
     </ul>
     <script>
+        // https://stackoverflow.com/questions/37903979/set-an-objects-absolute-rotation-around-the-world-axis
+
+        var xWorldRot = 0,
+            yWorldRot = 0,
+            zWorldRot = 0;
+
+        var prevX = 0,
+            prevY = 0,
+            prevZ = 0;
+
         var eRotation = Object.freeze({
             eXAntiClockwise: 0,
             eXClockwise: 1,
@@ -55,11 +102,13 @@
             eZClockwise: 5
         });
         var scene = new THREE.Scene();
-        var canvasWidth = 500;
-        var canvasHeight = 500;
+        var canvasWidth = 400;
+        var canvasHeight = 400;
         var inRotatingProcess = false;
 
-        var renderer = new THREE.WebGLRenderer({ alpha: true });
+        var renderer = new THREE.WebGLRenderer({
+            alpha: true
+        });
         renderer.setSize(canvasWidth, canvasHeight);
         document.body.appendChild(renderer.domElement);
 
@@ -67,20 +116,61 @@
         camera.position.set(1.3, 1.3, 1.3);
         camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-        var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.position.x = 1;
-        directionalLight.position.y = 5;
-        directionalLight.position.z = 2;
-        scene.add(directionalLight);
-
-        var ambientLight = new THREE.AmbientLight(0xdddddd);
-        scene.add(ambientLight);
+        var axesHelper = new THREE.AxesHelper(1);
+        scene.add(axesHelper);
 
         var geometry = new THREE.BoxGeometry(1, 1, 1);
-        var material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+        // Yellow
+        geometry.faces[0].vertexColors[0] = new THREE.Color(0xffff00);
+        geometry.faces[0].vertexColors[1] = new THREE.Color(0xffff00);
+        geometry.faces[0].vertexColors[2] = new THREE.Color(0xffff00);
+        geometry.faces[1].vertexColors[0] = new THREE.Color(0xffff00);
+        geometry.faces[1].vertexColors[1] = new THREE.Color(0xffff00);
+        geometry.faces[1].vertexColors[2] = new THREE.Color(0xffff00);
+        // White 
+        geometry.faces[2].vertexColors[0] = new THREE.Color(0xffffff);
+        geometry.faces[2].vertexColors[1] = new THREE.Color(0xffffff);
+        geometry.faces[2].vertexColors[2] = new THREE.Color(0xffffff);
+        geometry.faces[3].vertexColors[0] = new THREE.Color(0xffffff);
+        geometry.faces[3].vertexColors[1] = new THREE.Color(0xffffff);
+        geometry.faces[3].vertexColors[2] = new THREE.Color(0xffffff);
+        // Green
+        geometry.faces[4].vertexColors[0] = new THREE.Color(0x008000);
+        geometry.faces[4].vertexColors[1] = new THREE.Color(0x008000);
+        geometry.faces[4].vertexColors[2] = new THREE.Color(0x008000);
+        geometry.faces[5].vertexColors[0] = new THREE.Color(0x008000);
+        geometry.faces[5].vertexColors[1] = new THREE.Color(0x008000);
+        geometry.faces[5].vertexColors[2] = new THREE.Color(0x008000);
+        // Red 
+        geometry.faces[6].vertexColors[0] = new THREE.Color(0xff0000);
+        geometry.faces[6].vertexColors[1] = new THREE.Color(0xff0000);
+        geometry.faces[6].vertexColors[2] = new THREE.Color(0xff0000);
+        geometry.faces[7].vertexColors[0] = new THREE.Color(0xff0000);
+        geometry.faces[7].vertexColors[1] = new THREE.Color(0xff0000);
+        geometry.faces[7].vertexColors[2] = new THREE.Color(0xff0000);
+        // Blue
+        geometry.faces[8].vertexColors[0] = new THREE.Color(0x0000ff);
+        geometry.faces[8].vertexColors[1] = new THREE.Color(0x0000ff);
+        geometry.faces[8].vertexColors[2] = new THREE.Color(0x0000ff);
+        geometry.faces[9].vertexColors[0] = new THREE.Color(0x0000ff);
+        geometry.faces[9].vertexColors[1] = new THREE.Color(0x0000ff);
+        geometry.faces[9].vertexColors[2] = new THREE.Color(0x0000ff);
+        // Orange
+        geometry.faces[10].vertexColors[0] = new THREE.Color(0xffa500);
+        geometry.faces[10].vertexColors[1] = new THREE.Color(0xffa500);
+        geometry.faces[10].vertexColors[2] = new THREE.Color(0xffa500);
+        geometry.faces[11].vertexColors[0] = new THREE.Color(0xffa500);
+        geometry.faces[11].vertexColors[1] = new THREE.Color(0xffa500);
+        geometry.faces[11].vertexColors[2] = new THREE.Color(0xffa500);
+        var material = new THREE.MeshBasicMaterial({
+            vertexColors: THREE.VertexColors
+        });
         var cube = new THREE.Mesh(geometry, material);
-        cube.position.y = 0.2;
         scene.add(cube);
+
+        // var pivotPoint = new THREE.Object3D();
+        // scene.add(pivotPoint);
+        // pivotPoint.add(cube);
 
         var tween = null;
 
@@ -97,46 +187,87 @@
         };
 
         function runRotation(rotation) {
-            var rx_start = THREE.Math.radToDeg(cube.rotation.x);
-            var rx_end = THREE.Math.radToDeg(cube.rotation.x);
-            var ry_start = THREE.Math.radToDeg(cube.rotation.y);
-            var ry_end = THREE.Math.radToDeg(cube.rotation.y);
-            var rz_start = THREE.Math.radToDeg(cube.rotation.z);
-            var rz_end = THREE.Math.radToDeg(cube.rotation.z);
-            var inRotatingProcess = true;
+            rx_start = THREE.Math.radToDeg(prevX);
+            ry_start = THREE.Math.radToDeg(prevY);
+            rz_start = THREE.Math.radToDeg(prevZ);
+
+            inRotatingProcess = true;
 
             switch (rotation) {
                 case eRotation.eXAntiClockwise:
                     rx_end = rx_start + 90;
+                    ry_end = ry_start;
+                    rz_end = rz_start;
                     break;
                 case eRotation.eXClockwise:
                     rx_end = rx_start - 90;
+                    ry_end = ry_start;
+                    rz_end = rz_start;
                     break;
                 case eRotation.eYAntiClockwise:
+                    rx_end = rx_start;
                     ry_end = ry_start + 90;
+                    rz_end = rz_start;
                     break;
                 case eRotation.eYClockwise:
+                    rx_end = rx_start;
                     ry_end = ry_start - 90;
+                    rz_end = rz_start;
                     break;
                 case eRotation.eZAntiClockwise:
+                    rx_end = rx_start;
+                    ry_end = ry_start;
                     rz_end = rz_start + 90;
                     break;
                 case eRotation.eZClockwise:
+                    rx_end = rx_start;
+                    ry_end = ry_start;
                     rz_end = rz_start - 90;
                     break;
             }
 
-            tween = new TWEEN.Tween({ rx: rx_start, ry: ry_start, rz: rz_start })
-                .to({ rx: rx_end, ry: ry_end, rz: rz_end }, 500)
+            tween = new TWEEN.Tween({
+                rx: rx_start,
+                ry: ry_start,
+                rz: rz_start
+            })
+                .to({
+                    rx: rx_end,
+                    ry: ry_end,
+                    rz: rz_end
+                }, 500)
                 .onUpdate(function() {
-                    cube.rotation.x = THREE.Math.degToRad(this.rx);
-                    cube.rotation.y = THREE.Math.degToRad(this.ry);
-                    cube.rotation.z = THREE.Math.degToRad(this.rz);
+                    doRotation(
+                        THREE.Math.degToRad(this.rx),
+                        THREE.Math.degToRad(this.ry),
+                        THREE.Math.degToRad(this.rz));
                 })
                 .onComplete(function() {
                     inRotatingProcess = false;
                 })
                 .start();
+        }
+
+        function doRotation(x, y, z) {
+            var inverse = new THREE.Matrix4().getInverse(cube.matrix);
+
+            var rotation = cube.matrix;
+            var worldXAxis = new THREE.Vector3(1, 0, 0).applyMatrix4(new THREE.Matrix4().getInverse(rotation));
+            var rotationWorldX = new THREE.Matrix4().makeRotationAxis(worldXAxis, x - prevX);
+            rotation.multiply(rotationWorldX);
+            var worldYAxis = new THREE.Vector3(0, 1, 0).applyMatrix4(new THREE.Matrix4().getInverse(rotation));
+            var rotationWorldY = new THREE.Matrix4().makeRotationAxis(worldYAxis, y - prevY);
+            rotation.multiply(rotationWorldY);
+            var worldZAxis = new THREE.Vector3(0, 0, 1).applyMatrix4(new THREE.Matrix4().getInverse(rotation));
+            var rotationWorldZ = new THREE.Matrix4().makeRotationAxis(worldZAxis, z - prevZ);
+            rotation.multiply(rotationWorldZ);
+
+            prevX = x;
+            prevY = y;
+            prevZ = z;
+
+            cube.matrixAutoUpdate = false;
+            cube.matrix = rotation;
         }
 
         function aroundXAntiClockwise() {
