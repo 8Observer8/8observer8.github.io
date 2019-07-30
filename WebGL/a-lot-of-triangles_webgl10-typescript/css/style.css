@@ -1,0 +1,14 @@
+
+.centered {
+    display: block;
+    margin: 0 auto;
+}
+
+#renderCanvas {
+    background: #eee;
+    margin-top: 20px;
+}
+
+#btnOk {
+    margin-top: 20px;
+}

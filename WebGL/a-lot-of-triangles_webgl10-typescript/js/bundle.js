@@ -1,0 +1,196 @@
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var Scene_1 = require("./Scene");
+var Program = /** @class */ (function () {
+    function Program() {
+    }
+    Program.Main = function () {
+        var scene = new Scene_1.Scene("renderCanvas");
+    };
+    return Program;
+}());
+// Debug Version
+Program.Main();
+// Release Version
+// window.onload = () => Program.Main();
+
+},{"./Scene":2}],2:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var ShaderProgram_1 = require("./ShaderProgram");
+var Scene = /** @class */ (function () {
+    function Scene(canvasName) {
+        var _this = this;
+        this.Init = function (program) {
+            var gl = _this._gl;
+            _this._program = program;
+            _this._aPosition = gl.getAttribLocation(_this._program, "aPosition");
+            if (_this._aPosition < 0) {
+                console.log("Failed to get the storage location of aPosition");
+                return;
+            }
+            _this._aColor = gl.getAttribLocation(_this._program, "aColor");
+            if (_this._aColor < 0) {
+                console.log("Failed to get the storage location of aColor");
+                return;
+            }
+            _this.GenTriangles();
+            _this.Draw();
+        };
+        var btnOkName = "btnOk";
+        this._btnOk = document.getElementById(btnOkName);
+        if (this._btnOk === null || this._btnOk === undefined) {
+            console.log("Failed to get a button element with the name: " + btnOkName);
+            return;
+        }
+        this._btnOk.onclick = function () { return _this.OnBtnOn_Click(); };
+        var amountOfTrianglesName = "amountOfTrianglesElement";
+        this._amountOfTrianglesElement = document.getElementById(amountOfTrianglesName);
+        if (this._amountOfTrianglesElement === null || this._amountOfTrianglesElement === undefined) {
+            console.log("Failed to get a button element with the name: " + amountOfTrianglesName);
+            return;
+        }
+        this._amountOfTriangles = parseInt(this._amountOfTrianglesElement.value);
+        var canvas = document.getElementById(canvasName);
+        if (canvas === null || canvas === undefined) {
+            console.log("Failed to get a canvas element with the name: " + canvasName);
+            return;
+        }
+        var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+        if (gl === null || gl === undefined) {
+            console.log("Your browser does not support WebGL");
+            return;
+        }
+        this._gl = gl;
+        var shaderProgram = new ShaderProgram_1.ShaderProgram(gl, "shaders/vShader.glsl", "shaders/fShader.glsl", this.Init);
+    }
+    Scene.prototype.OnBtnOn_Click = function () {
+        this._amountOfTriangles = parseInt(this._amountOfTrianglesElement.value);
+        this.GenTriangles();
+        this.Draw();
+    };
+    Scene.prototype.GenTriangles = function () {
+        var gl = this._gl;
+        var coords = [];
+        var colors = [];
+        var x, y;
+        var r, g, b;
+        for (var i = 0; i < this._amountOfTriangles; i++) {
+            r = Math.random();
+            g = Math.random();
+            b = Math.random();
+            x = this.Random(-1, 1);
+            y = this.Random(-1, 1);
+            coords.push(x, y);
+            colors.push(r, g, b);
+            x = this.Random(-1, 1);
+            y = this.Random(-1, 1);
+            coords.push(x, y);
+            colors.push(r, g, b);
+            x = this.Random(-1, 1);
+            y = this.Random(-1, 1);
+            coords.push(x, y);
+            colors.push(r, g, b);
+        }
+        var coords_vbo = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, coords_vbo);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(coords), gl.STATIC_DRAW);
+        gl.vertexAttribPointer(this._aPosition, 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(this._aPosition);
+        var colors_vbo = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, colors_vbo);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+        gl.vertexAttribPointer(this._aColor, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(this._aColor);
+    };
+    Scene.prototype.Draw = function () {
+        var gl = this._gl;
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLES, 0, this._amountOfTriangles * 3);
+    };
+    Scene.prototype.Random = function (min, max) {
+        return Math.random() * (max - min) + min;
+    };
+    return Scene;
+}());
+exports.Scene = Scene;
+
+},{"./ShaderProgram":3}],3:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var ShaderProgram = /** @class */ (function () {
+    function ShaderProgram(gl, vShaderPath, fShaderPath, callbackFunc) {
+        this._vertexShaderSource = null;
+        this._fragmentShaderSource = null;
+        this._gl = gl;
+        this._callbackFunc = callbackFunc;
+        this.LoaderShaderFile(vShaderPath, gl.VERTEX_SHADER);
+        this.LoaderShaderFile(fShaderPath, gl.FRAGMENT_SHADER);
+    }
+    Object.defineProperty(ShaderProgram.prototype, "Handle", {
+        get: function () {
+            return this._handle;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ShaderProgram.prototype.LoaderShaderFile = function (fileName, shaderType) {
+        var _this = this;
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (request.readyState === 4 && request.status !== 404) {
+                _this.OnLoadShader(request.responseText, shaderType);
+            }
+        };
+        request.open("GET", fileName, true);
+        request.send();
+    };
+    ShaderProgram.prototype.OnLoadShader = function (fileContent, shaderType) {
+        if (shaderType === this._gl.VERTEX_SHADER) {
+            this._vertexShaderSource = fileContent;
+        }
+        else if (shaderType === this._gl.FRAGMENT_SHADER) {
+            this._fragmentShaderSource = fileContent;
+        }
+        // Start rendering, after loading both shaders
+        if (this._vertexShaderSource !== null && this._fragmentShaderSource !== null) {
+            this.CreateShaderProgram();
+        }
+    };
+    ShaderProgram.prototype.CreateShaderProgram = function () {
+        var gl = this._gl;
+        var vShader = this.GetShader(this._vertexShaderSource, gl.VERTEX_SHADER);
+        var fShader = this.GetShader(this._fragmentShaderSource, gl.FRAGMENT_SHADER);
+        if (vShader === null || fShader === null)
+            return;
+        this._handle = gl.createProgram();
+        gl.attachShader(this._handle, vShader);
+        gl.attachShader(this._handle, fShader);
+        gl.linkProgram(this._handle);
+        gl.useProgram(this._handle);
+        var status = gl.getProgramParameter(this._handle, gl.LINK_STATUS);
+        if (!status) {
+            console.log("Failed to link a program. Error message: " +
+                gl.getProgramInfoLog(this._handle));
+            return;
+        }
+        this._callbackFunc(this._handle);
+    };
+    ShaderProgram.prototype.GetShader = function (shaderSource, shaderType) {
+        var gl = this._gl;
+        var shader = gl.createShader(shaderType);
+        gl.shaderSource(shader, shaderSource);
+        gl.compileShader(shader);
+        var status = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+        if (!status) {
+            console.log(gl.getShaderInfoLog(shader));
+            return null;
+        }
+        return shader;
+    };
+    return ShaderProgram;
+}());
+exports.ShaderProgram = ShaderProgram;
+
+},{}]},{},[1]);
