@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Камень, ножницы, бумага</title>
+
+    <!-- Debug Version -->
+    <!-- <script data-main="js/RequireConfig"
+        src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script> -->
+
+    <!-- Release Verion -->
+    <script src="js/bundle.min.js"></script>
+</head>
+
+<body>
+    <!-- <button onclick="window.location.href='specs/SpecRunner.html'">Run Unit Tests</button>
+    <br>
+    <br> -->
+
+    <a href="index.html">English</a> | <a href="index_ru.html">Русский</a>
+    <br>
+    <br>
+    <br>
+
+    <h3>Игра "Камень, ножницы, бумага"</h3>
+
+    Выберите:
+    <p>
+        <input type="radio" name="shape" id="rock" value="rock" checked>
+        <label for="rock">Камень</label>
+    </p>
+    <p>
+        <input type="radio" name="shape" id="scissors" value="scissors">
+        <label for="scissors">Ножницы</label>
+    </p>
+    <p>
+        <input type="radio" name="shape" id="paper" value="paper">
+        <label for="paper">Бумага</label>
+    </p>
+    <br>
+    <button id="btnMakeMove">Сделать ход</button>
+    <br>
+    <br>
+    <br>
+    <div id="output"></div>
+
+</body>
+
+</html>
