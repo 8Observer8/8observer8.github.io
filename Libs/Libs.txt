@@ -1,0 +1,41 @@
+Babylon 4.1.0:
+https://dl.dropboxusercontent.com/s/sq91iu8l38s86p2/babylon-4.1.0.min.js
+https://cdnjs.cloudflare.com/ajax/libs/babylonjs/4.1.0/babylon.js
+
+D3 5.15.1:
+https://dl.dropboxusercontent.com/s/pr6t6l4xffq6obg/d3-5.15.1.min.js
+https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.1/d3.min.js
+
+dat.GUI 0.7.7:
+https://dl.dropboxusercontent.com/s/11uwy6zo4ucrxav/dat.gui-0.7.7.min.js
+https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js
+
+glMatrix 2.8.1:
+https://dl.dropboxusercontent.com/s/a32zhkr1g73ch9v/gl-matrix-2.8.1.min.js
+https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js
+
+Jasmine 3.5.0:
+https://dl.dropboxusercontent.com/s/uqgjz8vycott3bk/boot-3.5.0.min.js
+https://dl.dropboxusercontent.com/s/7vcmscyrtztatzz/jasmine-3.5.0.min.css
+https://dl.dropboxusercontent.com/s/98bqwd4dk2oh23y/jasmine-3.5.0.min.js
+https://dl.dropboxusercontent.com/s/h3rtumluinymaau/jasmine-html-3.5.0.min.js
+https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.5.0/jasmine.min.css
+https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.5.0/boot.min.js
+https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.5.0/jasmine-html.min.js
+https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.5.0/jasmine.min.js
+
+jQuery 3.5.0:
+https://dl.dropboxusercontent.com/s/fhmxotj8d5d4tef/jquery-3.5.0.min.js
+https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js
+
+Phaser 3.22.0:
+https://dl.dropboxusercontent.com/s/2pm8nqh44stlgra/phaser-3.22.0.min.js
+https://cdnjs.cloudflare.com/ajax/libs/phaser/3.22.0/phaser.min.js
+
+RequireJS 2.3.6:
+https://dl.dropboxusercontent.com/s/kgepxh66w1j8d8f/require-2.3.6.min.js
+https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js
+
+Socket.io 2.3.0:
+https://dl.dropboxusercontent.com/s/kgepxh66w1j8d8f/require-2.3.6.min.js
+https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js
