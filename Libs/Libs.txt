@@ -3,6 +3,10 @@ https://raw.githubusercontent.com/8Observer8/8observer8.github.io/master/Libs/Ba
 https://dl.dropboxusercontent.com/s/sq91iu8l38s86p2/babylon-4.1.0.min.js
 https://cdnjs.cloudflare.com/ajax/libs/babylonjs/4.1.0/babylon.js
 
+Babylon Loaders 4.1.0
+https://dl.dropboxusercontent.com/s/abgav2qk57r5wq9/babylon-loaders-4.1.0.min.js
+https://cdn.jsdelivr.net/npm/babylonjs-loaders@4.1.0/babylonjs.loaders.min.js
+
 D3 5.15.1:
 https://raw.githubusercontent.com/8Observer8/8observer8.github.io/master/Libs/D3/5.15.1/d3-5.15.1.min.js
 https://dl.dropboxusercontent.com/s/pr6t6l4xffq6obg/d3-5.15.1.min.js
