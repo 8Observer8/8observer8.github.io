@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Spruce with Toys. WebGL, JavaScript</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/gl-matrix@3.4.3/gl-matrix-min.js"></script>
+
+    <style>
+        html,
+        body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+</head>
+
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <img id="objectsImage" src="assets/colors.png" hidden>
+
+    <script>
+        const canvas = document.getElementById("renderCanvas");
+        const gl = canvas.getContext("webgl");
+
+        gl.clearColor(0.9, 0.95, 0.92, 1);
+        gl.enable(gl.DEPTH_TEST);
+
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        const vertShaderSource =
+            `attribute vec3 aPosition;
+            attribute vec2 aTexCoord;
+            uniform mat4 uMvpMatrix;
+            varying vec2 vTexCoord;
+            void main()
+            {
+                gl_Position = uMvpMatrix * vec4(aPosition, 1.0);
+                vTexCoord = aTexCoord;
+            }`;
+
+        const fragShaderSource =
+            `precision mediump float;
+            uniform sampler2D uSampler;
+            varying vec2 vTexCoord;
+            void main()
+            {
+                gl_FragColor = texture2D(uSampler, vTexCoord);
+            }`;
+
+
+        const vShader = gl.createShader(gl.VERTEX_SHADER);
+        gl.shaderSource(vShader, vertShaderSource);
+        gl.compileShader(vShader);
+        let ok = gl.getShaderParameter(vShader, gl.COMPILE_STATUS);
+        if (!ok) { console.log("vert: " + gl.getShaderInfoLog(vShader)); };
+
+        const fShader = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.shaderSource(fShader, fragShaderSource);
+        gl.compileShader(fShader);
+        ok = gl.getShaderParameter(vShader, gl.COMPILE_STATUS);
+        if (!ok) { console.log("frag: " + gl.getShaderInfoLog(fShader)); };
+
+        const program = gl.createProgram();
+        gl.attachShader(program, vShader);
+        gl.attachShader(program, fShader);
+        gl.bindAttribLocation(program, 0, "aPosition");
+        gl.bindAttribLocation(program, 1, "aNormal");
+        gl.bindAttribLocation(program, 2, "aTexCoord");
+        gl.linkProgram(program);
+        ok = gl.getProgramParameter(program, gl.LINK_STATUS);
+        if (!ok) { console.log("link: " + gl.getProgramInfoLog(program)); };
+
+        class Keyboard
+        {
+            constructor()
+            {
+                this.keys = {};
+                document.addEventListener("keydown", (event) => { this.onKeyChange(event, true) }, true);
+                document.addEventListener("keyup", (event) => { this.onKeyChange(event, false) }, false);
+            }
+
+            pressed(key)
+            {
+                return this.keys[key];
+            }
+
+            onKeyChange(event, pressed)
+            {
+                this.keys[event.key] = pressed;
+            }
+        }
+
+        class Object3D
+        {
+            constructor(program, texture, gltf, binData, primitive, position)
+            {
+                this.position = position;
+                this.rotation = glMatrix.quat.create();
+                this.scale = [1, 1, 1];
+
+                this.texture = texture;
+
+                this.mvpMatrix = glMatrix.mat4.create();
+                this.modelMatrix = glMatrix.mat4.create();
+                this.normalMatrix = glMatrix.mat4.create();
+
+                gl.useProgram(program);
+                this.uMvpMatrixLocation = gl.getUniformLocation(program, "uMvpMatrix");
+                this.uModelMatrixLocation = gl.getUniformLocation(program, "uModelMatrix");
+                this.uNormalMatrixLocation = gl.getUniformLocation(program, "uNormalMatrix");
+                this.program = program;
+
+                const posIndex = gltf.meshes[0].primitives[primitive].attributes.POSITION;
+                const posBufferViewIndex = gltf.accessors[posIndex].bufferView;
+                const posBufferView = gltf.bufferViews[posBufferViewIndex];
+                const posByteOffset = posBufferView.byteOffset;
+                const posByteLength = posBufferView.byteLength;
+                const vertPosData = new Float32Array(binData, posByteOffset, posByteLength / Float32Array.BYTES_PER_ELEMENT);
+                this.vertPosBuffer = gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, this.vertPosBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, vertPosData, gl.STATIC_DRAW);
+                this.posAttribByteOffset = gltf.accessors[posIndex].byteOffset;
+                this.posStride = posBufferView.byteStride;
+
+                const normalIndex = gltf.meshes[0].primitives[primitive].attributes.NORMAL;
+                const normalBufferViewIndex = gltf.accessors[normalIndex].bufferView;
+                const normalBufferView = gltf.bufferViews[normalBufferViewIndex];
+                const normalByteOffset = normalBufferView.byteOffset;
+                const normalByteLength = normalBufferView.byteLength;
+                const normalData = new Float32Array(binData, normalByteOffset, normalByteLength / Float32Array.BYTES_PER_ELEMENT);
+                this.normalBuffer = gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, normalData, gl.STATIC_DRAW);
+                this.normalAttribByteOffset = gltf.accessors[normalIndex].byteOffset;
+                this.normalStride = normalBufferView.byteStride;
+
+                const texCoordIndex = gltf.meshes[0].primitives[primitive].attributes.TEXCOORD_0;
+                const texCoordBufferViewIndex = gltf.accessors[texCoordIndex].bufferView;
+                const texCoordBufferView = gltf.bufferViews[texCoordBufferViewIndex];
+                const texCoordByteOffset = texCoordBufferView.byteOffset;
+                const texCoordByteLength = texCoordBufferView.byteLength;
+                const texCoordData = new Float32Array(binData, texCoordByteOffset, texCoordByteLength / Float32Array.BYTES_PER_ELEMENT);
+                this.texCoordBuffer = gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, texCoordData, gl.STATIC_DRAW);
+                this.texCoordAttribByteOffset = gltf.accessors[texCoordIndex].byteOffset;
+                this.texCoordStride = texCoordBufferView.byteStride;
+
+                const indicesIndex = gltf.meshes[0].primitives[primitive].indices;
+                const indicesBufferViewIndex = gltf.accessors[indicesIndex].bufferView;
+                const indicesBufferView = gltf.bufferViews[indicesBufferViewIndex];
+                const indicesByteOffset = indicesBufferView.byteOffset;
+                const indicesByteLength = indicesBufferView.byteLength;
+                const indexData = new Uint16Array(binData, indicesByteOffset, indicesByteLength / 2);
+                this.indexBuffer = gl.createBuffer();
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexData, gl.STATIC_DRAW);
+
+                this.amountOfVertices = gltf.accessors[indicesIndex].count;
+            }
+
+            bind()
+            {
+                gl.bindBuffer(gl.ARRAY_BUFFER, this.vertPosBuffer);
+                gl.vertexAttribPointer(0, 3, gl.FLOAT, false, this.posStride, this.posAttribByteOffset);
+                gl.enableVertexAttribArray(0);
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+                gl.vertexAttribPointer(1, 3, gl.FLOAT, false, this.normalStride, this.normalAttribByteOffset);
+                gl.enableVertexAttribArray(1);
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
+                gl.vertexAttribPointer(2, 2, gl.FLOAT, false, this.texCoordStride, this.texCoordAttribByteOffset);
+                gl.enableVertexAttribArray(2);
+
+                gl.bindTexture(gl.TEXTURE_2D, this.texture);
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+            }
+
+            draw(projViewMatrix)
+            {
+                gl.useProgram(this.program);
+
+                glMatrix.mat4.fromRotationTranslationScale(this.modelMatrix, this.rotation, this.position, this.scale);
+                glMatrix.mat4.mul(this.mvpMatrix, projViewMatrix, this.modelMatrix);
+                gl.uniformMatrix4fv(this.uMvpMatrixLocation, false, this.mvpMatrix);
+                gl.uniformMatrix4fv(this.uModelMatrixLocation, false, this.modelMatrix);
+
+                glMatrix.mat4.invert(this.normalMatrix, this.modelMatrix);
+                glMatrix.mat4.transpose(this.normalMatrix, this.normalMatrix);
+                gl.uniformMatrix4fv(this.uNormalMatrixLocation, false, this.normalMatrix);
+
+                this.bind();
+                gl.drawElements(gl.TRIANGLES, this.amountOfVertices, gl.UNSIGNED_SHORT, 0);
+            }
+        }
+
+        const projMatrix = glMatrix.mat4.create();
+
+        window.onresize = () =>
+        {
+            const w = canvas.clientWidth;
+            const h = canvas.clientHeight;
+            gl.canvas.width = w;
+            gl.canvas.height = h;
+            gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+            glMatrix.mat4.perspective(projMatrix, 55 * Math.PI / 180, w / h, 0.1, 500);
+            // glMatrix.mat4.ortho(projMatrix, -10, 10, -10, 10, 100, -100);
+        };
+        window.onresize(null);
+
+        const viewMatrix = glMatrix.mat4.create();
+        const projViewMatrix = glMatrix.mat4.create();
+
+        gl.useProgram(program);
+        const lightPosition = glMatrix.vec3.fromValues(1, 4, 3);
+        const uLightPositionLocation = gl.getUniformLocation(program, "uLightPosition");
+        gl.uniform3fv(uLightPositionLocation, lightPosition);
+
+        let objects;
+
+        let cameraRadius = 15;
+        let sideAngle = 0, highAngle = 50;
+        let cameraX, cameraY, cameraZ;
+        const cameraHighSpeed = 3;
+        const cameraSideSpeed = 5;
+
+        updateCameraPosition();
+
+        main();
+
+        async function main()
+        {
+            response = await fetch("assets/objects.gltf");
+            textResponse = await response.text();
+            const objectsJson = JSON.parse(textResponse);
+            binDataResponse = await fetch("assets/objects0.bin");
+            blobResponse = await binDataResponse.blob();
+            const objectsBinData = await new Response(blobResponse).arrayBuffer();
+
+            const image = document.getElementById("objectsImage");
+            texture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+
+            objects = new Object3D(program, texture, objectsJson, objectsBinData, 0, [0, 0, 0]);
+
+            draw();
+
+            document.onkeydown = (event) =>
+            {
+                if (event.key === "w" || event.key === "ArrowUp")
+                {
+                    highAngle -= cameraHighSpeed;
+                    updateCameraPosition();
+                    draw();
+                }
+
+                if (event.key === "a" || event.key === "ArrowLeft")
+                {
+                    sideAngle += cameraSideSpeed;
+                    updateCameraPosition();
+                    draw();
+                }
+
+                if (event.key === "s" || event.key === "ArrowDown")
+                {
+                    highAngle += cameraHighSpeed;
+                    updateCameraPosition();
+                    draw();
+                }
+
+                if (event.key === "d" || event.key === "ArrowRight")
+                {
+                    sideAngle -= cameraSideSpeed;
+                    updateCameraPosition();
+                    draw();
+                }
+
+                if (event.key === "+")
+                {
+                    cameraRadius -= 1;
+                    updateCameraPosition();
+                    draw();
+                }
+
+                if (event.key === "-")
+                {
+                    cameraRadius += 1;
+                    updateCameraPosition();
+                    draw();
+                }
+            };
+        }
+
+        function draw()
+        {
+            // requestAnimationFrame(() => draw());
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            glMatrix.mat4.mul(projViewMatrix, projMatrix, viewMatrix);
+            objects.draw(projViewMatrix);
+        }
+
+        function updateCameraPosition()
+        {
+            cameraX = cameraRadius * Math.sin(highAngle * Math.PI / 180) * Math.cos(sideAngle * Math.PI / 180);
+            cameraY = cameraRadius * Math.cos(highAngle * Math.PI / 180);
+            cameraZ = cameraRadius * Math.sin(highAngle * Math.PI / 180) * Math.sin(sideAngle * Math.PI / 180);
+            glMatrix.mat4.lookAt(viewMatrix, [cameraX, cameraY, cameraZ], [0, 3, 0], [0, 1, 0]);
+        }
+    </script>
+</body>
+
+</html>
