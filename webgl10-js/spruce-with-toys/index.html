@@ -210,19 +210,6 @@
         }
 
         const projMatrix = glMatrix.mat4.create();
-
-        window.onresize = () =>
-        {
-            const w = canvas.clientWidth;
-            const h = canvas.clientHeight;
-            gl.canvas.width = w;
-            gl.canvas.height = h;
-            gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-            glMatrix.mat4.perspective(projMatrix, 55 * Math.PI / 180, w / h, 0.1, 500);
-            // glMatrix.mat4.ortho(projMatrix, -10, 10, -10, 10, 100, -100);
-        };
-        window.onresize(null);
-
         const viewMatrix = glMatrix.mat4.create();
         const projViewMatrix = glMatrix.mat4.create();
 
@@ -261,7 +248,18 @@
 
             objects = new Object3D(program, texture, objectsJson, objectsBinData, 0, [0, 0, 0]);
 
-            draw();
+            window.onresize = () =>
+            {
+                const w = canvas.clientWidth;
+                const h = canvas.clientHeight;
+                gl.canvas.width = w;
+                gl.canvas.height = h;
+                gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+                glMatrix.mat4.perspective(projMatrix, 55 * Math.PI / 180, w / h, 0.1, 500);
+                // glMatrix.mat4.ortho(projMatrix, -10, 10, -10, 10, 100, -100);
+                draw();
+            };
+            window.onresize(null);
 
             document.onkeydown = (event) =>
             {
