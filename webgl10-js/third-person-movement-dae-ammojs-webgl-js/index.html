@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Third Person Movement. DAE, Ammo.js, WebGL, JavaScript</title>
+
+    <script src="https://dl.dropboxusercontent.com/s/e5iytx67noqoew7/ammo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gl-matrix@3.4.3/gl-matrix-min.js"></script>
+
+    <style>
+        html,
+        body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="renderCanvas"></canvas>
+
+    <img id="playerImage" src="assets/player.png" hidden>
+    <img id="floorImage" src="assets/floor.png" hidden>
+
+    <script type="x-shader/x-vertex" id="defaultVertexShader">
+        attribute vec4 aPosition;
+        attribute vec4 aNormal;
+        attribute vec2 aTexCoord;
+        uniform mat4 uMvpMatrix;
+        uniform mat4 uModelMatrix;
+        uniform mat4 uNormalMatrix;
+        varying vec3 vPosition;
+        varying vec3 vNormal;
+        varying vec2 vTexCoord;
+        void main()
+        {
+            gl_Position = uMvpMatrix * aPosition;
+            vPosition = vec3(uModelMatrix * aPosition);
+            vNormal = normalize(vec3(uNormalMatrix * aNormal));
+            vTexCoord = aTexCoord;
+        }
+    </script>
+
+    <script type="x-shader/x-fragment" id="defaultFragmentShader">
+        precision mediump float;
+        const vec3 lightColor = vec3(1.0, 1.0, 1.0);
+        const float ambient = 0.3;
+        uniform vec3 uLightPosition;
+        uniform sampler2D uSampler;
+        varying vec3 vPosition;
+        varying vec3 vNormal;
+        varying vec2 vTexCoord;
+        void main()
+        {
+            vec4 color = texture2D(uSampler, vTexCoord);
+            vec3 normal = normalize(vNormal);
+            vec3 lightDirection = normalize(uLightPosition - vPosition);
+            float nDotL = max(dot(lightDirection, normal), ambient);
+            vec3 diffuse = lightColor * color.rgb * nDotL;
+            gl_FragColor = vec4(diffuse, color.a);
+        }
+    </script>
+
+    <script type="x-shader/x-vertex" id="edgeVertexShader">
+        attribute vec3 aPosition;
+        uniform mat4 uMvpMatrix;
+        void main()
+        {
+            gl_Position = uMvpMatrix * vec4(aPosition, 1.0);
+        }
+    </script>
+
+    <script type="x-shader/x-fragment" id="edgeFragmentShader">
+        precision mediump float;
+        void main()
+        {
+            gl_FragColor = vec4(0.1, 1.0, 0.3, 1.0);
+        }
+    </script>
+
+    <script src="js/webgl-context.js"></script>
+    <script src="js/shader-program.js"></script>
+    <script src="js/vertex-buffers.js"></script>
+    <script src="js/object-for-graphics.js"></script>
+    <script src="js/object-for-physics.js"></script>
+    <script src="js/object-for-edge.js"></script>
+    <script src="js/debug-drawer.js"></script>
+    <script src="js/keyboard.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
