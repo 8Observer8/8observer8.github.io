@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Third Person Movement in Flat. WebGL 1.0, TypeScript</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <canvas id="renderCanvas"></canvas>
+
+    <img id="groundImage" src="assets/ground.jpg" hidden>
+    <img id="flatImage" src="assets/flat-test.png" hidden>
+    <!-- <img id="cubeImage" src="assets/cube.png" hidden> -->
+
+    <script id="defaultVertexShader" type="x-shader/x-vertex">
+        attribute vec4 aPosition;
+        attribute vec4 aNormal;
+        attribute vec2 aTexCoord;
+        uniform mat4 uMvpMatrix;
+        uniform mat4 uModelMatrix;
+        uniform mat4 uNormalMatrix;
+        varying vec3 vPosition;
+        varying vec3 vNormal;
+        varying vec2 vTexCoord;
+        void main()
+        {
+            gl_Position = uMvpMatrix * aPosition;
+            vPosition = vec3(uModelMatrix * aPosition);
+            vNormal = normalize(vec3(uNormalMatrix * aNormal));
+            vTexCoord = aTexCoord;
+        }
+    </script>
+
+    <script id="defaultFragmentShader" type="x-shader/x-fragment">
+        precision mediump float;
+        const vec3 lightColor = vec3(1.0, 1.0, 1.0);
+        const float ambient = 0.3;
+        uniform vec3 uLightPosition;
+        uniform sampler2D uSampler;
+        varying vec3 vPosition;
+        varying vec3 vNormal;
+        varying vec2 vTexCoord;
+        void main()
+        {
+            vec4 color = texture2D(uSampler, vTexCoord);
+            vec3 normal = normalize(vNormal);
+            vec3 lightDirection = normalize(uLightPosition - vPosition);
+            float nDotL = max(dot(lightDirection, normal), ambient);
+            vec3 diffuse = lightColor * color.rgb * nDotL;
+            gl_FragColor = vec4(diffuse, color.a);
+        }
+    </script>
+
+    <script id="vertexShaderWithoutLighting" type="x-shader/x-vertex">
+        attribute vec3 aPosition;
+        uniform mat4 uMvpMatrix;
+        void main()
+        {
+            gl_Position = uMvpMatrix * vec4(aPosition, 1.0);
+        }
+    </script>
+
+    <script id="fragmentShaderWithoutLighting" type="x-shader/x-fragment">
+        precision mediump float;
+        void main()
+        {
+            gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+        }
+    </script>
+
+    <!-- Debug -->
+    <!-- <script data-main="js/require-config"
+        src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script> -->
+    <!-- Release -->
+    <script src="js/bundle.min.js"></script>
+</body>
+
+</html>
