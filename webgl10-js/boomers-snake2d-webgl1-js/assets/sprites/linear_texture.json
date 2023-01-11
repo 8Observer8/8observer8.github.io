@@ -1,0 +1,63 @@
+{
+  "frames": {
+    "game_over_try_again.png": {
+      "frame": {
+        "x": 1,
+        "y": 1,
+        "w": 740,
+        "h": 200
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 740,
+        "h": 200
+      },
+      "sourceSize": {
+        "w": 740,
+        "h": 200
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "you_have_won.png": {
+      "frame": {
+        "x": 743,
+        "y": 1,
+        "w": 740,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 740,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 740,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "linear_texture.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 2048,
+      "h": 256
+    },
+    "scale": 1
+  }
+}
