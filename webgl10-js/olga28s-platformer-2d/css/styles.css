@@ -1,0 +1,35 @@
+#drawingCanvas {
+    position: absolute;
+    top: 7px;
+    left: 7px;
+}
+
+#guiCanvas {
+    position: absolute;
+    top: 7px;
+    left: 7px;
+}
+
+button {
+    color: #fff;
+    background: rgb(212, 75, 56);
+    /* фон кнопки */
+    padding: .7em 1.5em;
+    /* отступ от текста */
+}
+
+#infotext {
+    font-size: 24px;
+    margin: 0 0 20px 0
+}
+
+button:hover {
+    background: rgb(232, 95, 76);
+}
+
+/* при наведении курсора мышки */
+button:active {
+    background: rgb(152, 15, 0);
+}
+
+/* при нажатии */
