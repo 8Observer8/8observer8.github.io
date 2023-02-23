@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Example</title>
+    <link rel="stylesheet" type="text/css" href="./css/styles.css">
+</head>
+
+<body style="caret-color: transparent;">
+    <p>Press Ctrl+Shift+J to open the console output in Chrome.<br>
+    As you can see <i>grounded</i> is equal to <i>false</i>.<br>
+    So <i>b2Fixture::RayCast</i> doesn't work in box2d-wasm. See <a href="https://github.com/Birch-san/box2d-wasm/issues/58">my issue</a>.</p>
+    <p><a href="https://8observer8.github.io/webgl10-js/simple-can-jump-with-ray-box2dcore-webgl-js/">The same example with <b>box2d-core</b> that works.</a></p>
+    <p>Press A, S or arrow-keys - to move</p>
+    <p>Press W or up-key - to jump</p>
+    <p><a href="https://github.com/8Observer8/simple-can-jump-with-ray-box2dwasm-webgl-js">GitHub Repository</a> with sandboxes and instruction for Rollup</p>
+    <div style="position: relative; width: 350px;">
+        <div style="position: absolute; top: 20px; right: 20px;">
+            <input type="checkbox" id="colliderCheckBox" checked="true">
+            <label for="colliderCheckBox">
+                <span style="color: white">Show colliders</span>
+            </label>            
+        </div>
+        <canvas id="renderCanvas" width="350" height="350"></canvas>
+    </div>
+
+    <!-- Since import maps are not yet supported by all browsers, it is
+        necessary to add the polyfill es-module-shims.js
+        Source: https://threejs.org/docs/index.html#manual/en/introduction/Installation -->
+    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "gl-matrix": "https://cdn.skypack.dev/gl-matrix@3.4.3",
+                "box2d": "https://8observer8.github.io/lib/box2d-wasm-7.0.0-box2d-2.4.1/box2d-wasm.min.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="./js/bundle.js"></script>
+</body>
+</html>
