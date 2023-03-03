@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Example</title>
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
+</head>
+
+<body style="caret-color: transparent;">
+    <p>A, D (and arrow-keys) - to move</p>
+    <p>W (and up-key) - to jump</p>
+    <div style="position: relative; width: 400px;">
+        <div style="position: absolute; top: 20px; right: 20px;">
+            <input type="checkbox" id="colliderCheckBox">
+            <label for="colliderCheckBox">
+                <span style="color: white">Show colliders</span>
+            </label>
+        </div>
+        <div style="position: absolute; top: 50px; right: 50px;">
+            <input type="checkbox" id="rayCheckBox">
+            <label for="rayCheckBox">
+                <span style="color: white">Show rays</span>
+            </label>
+        </div>
+        <canvas id="renderCanvas" width="400" height="400"></canvas>
+    </div>
+
+    <!-- Since import maps are not yet supported by all browsers, it is
+        necessary to add the polyfill es-module-shims.js
+        Source: https://threejs.org/docs/index.html#manual/en/introduction/Installation -->
+    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "gl-matrix": "https://cdn.skypack.dev/gl-matrix@3.4.3",
+                "oimo-physics": "https://cdn.jsdelivr.net/gh/saharan/OimoPhysics@1.2.4/bin/js/OimoPhysics.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="./js/bundle.js"></script>
+</body>
+
+</html>
