@@ -15,16 +15,40 @@
     <!-- <div style="position: relative; width: 500px;">
     </div> -->
 
-    <div style="position: absolute; top: 20px; right: 20px; color: white;" tabindex="-1">
-        <input type="radio" name="camera" id="firstPerson">
-        <label for="firstPerson">First Person (WASD, arrow-keys)</label>
+    <div id="instructions">
+        <div>
+            <h1 id="control">Control</h1>
+            <span id="move">Move: W-A-S-D</span><br/>
+            <span id="look">Look: ARROWS</span>
+
+            <!-- <h1 id="begin">Click to begin</h1> -->
+            <br>
+            <br>
+            <button id="begin" style="cursor: pointer; font-size: 24px; padding: 20px;">Click to begin</button>
+        </div>
+    </div>
+
+    <div style="position: absolute; top: 20px; right: 60px; color: white;">
+        <input type="radio" name="language" id="english" style="text-align: left;" checked="true">
+        <label for="english">ENG</label>
         <br>
-        <input type="radio" name="camera" id="thirdPerson" checked="true">
-        <label for="thirdPerson">Third Person (WASD, LMB, MMB, RMB)</label>
+        <input type="radio" name="language" id="russian" style="text-align: left;">
+        <label for="russian">РУС</label>
+        <br>
+        <input type="radio" name="language" id="chinese" style="text-align: left;">
+        <label for="chinese">中国人</label>
+    </div>
+
+    <div id="cameraHUD" style="position: absolute; top: 100px; right: 20px; color: white; display: none;" tabindex="-1">
+        <input type="radio" name="camera" id="firstPerson" checked="true">
+        <label for="firstPerson"><span id="firstPersonLabel">First Person Camera</span></label>
+        <br>
+        <input type="radio" name="camera" id="thirdPerson">
+        <label for="thirdPerson"><span id="thirdPersonLabel">Third Person Camera</span></label>
         <br>
         <br>
         <input type="checkbox" id="colliderCheckBox">
-        <label for="colliderCheckBox">Show colliders</label>
+        <label for="colliderCheckBox"><span id="colliderCheckBoxLabel">Show colliders</span></label>
     </div>
     <canvas id="renderCanvas" width="500" height="500"></canvas>
 
