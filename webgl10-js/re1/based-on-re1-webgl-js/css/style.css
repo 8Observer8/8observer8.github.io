@@ -1,0 +1,81 @@
+html,
+body {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#renderCanvas {
+    width: 640px;
+    height: 480px;
+}
+
+.instructions {
+    width: 100%;
+    height: 100%;
+
+    user-select: none;
+    text-shadow: 1px 1px 1px #9E9E9E;
+
+    background: rgba(0.9, 0.9, 0.9, 0.5);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    box-orient: horizontal;
+
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    box-pack: center;
+
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    box-align: center;
+
+    color: #ffffff;
+    text-align: center;
+    font-family: Arial;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.gameButton {
+    cursor: pointer;
+    font-size: 24px;
+    width: 330px;
+    height: 50px;
+    margin: 5px;
+}
+
+.centerDiv {
+/*    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -50px;
+    margin-left: -50px;
+*/
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 330px;
+    height: 200px;
+    font-size: 20px;
+}
+
+.center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
