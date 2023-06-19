@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Example</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body style="caret-color: transparent; background-color: gray;">
+
+    <div id="singleCoopModePanel" class="instructions">
+        <button id="singleModeButton" class="gameButton">Single mode</button>
+        <br>
+        <button id="coopModeButton" class="gameButton">Co-op mode</button>
+    </div>
+
+    <div id="loadingPanel" style="color: white; display: none;" class="centerDiv">
+        <p id="loadingLabel" style="text-align: center;">Loading...</p>
+        <p id="loadingValue" style="text-align: center;">0%</p>
+    </div>
+
+    <div id="instructions" class="instructions" style="display: none;">
+        <div>
+            <h1 id="control">Control</h1>
+            <span id="move">Use W-A-S-D keys to move</span><br />
+            <!-- <span id="look">Mouse for camera rotation</span> -->
+            <br>
+            <button id="begin" style="cursor: pointer; font-size: 24px; padding: 20px;">Click to begin</button>
+        </div>
+    </div>
+
+    <div style="position: absolute; top: 20px; right: 60px; color: white;">
+        <input type="radio" name="language" id="english" style="text-align: left;" checked="true">
+        <label for="english">ENG</label>
+        <br>
+        <input type="radio" name="language" id="russian" style="text-align: left;">
+        <label for="russian">РУС</label>
+        <br>
+        <input type="radio" name="language" id="chinese" style="text-align: left;">
+        <label for="chinese">中国人</label>
+    </div>
+
+    <div id="cameraHUD" style="position: absolute; top: 100px; right: 20px; color: white; display: none;" tabindex="-1">
+        <input type="radio" name="camera" id="firstPerson" checked="true">
+        <label for="firstPerson"><span id="firstPersonLabel">First Person Camera</span></label>
+        <br>
+        <input type="radio" name="camera" id="thirdPerson">
+        <label for="thirdPerson"><span id="thirdPersonLabel">Orbiting Camera</span></label>
+        <br>
+        <br>
+        <input type="checkbox" id="colliderCheckBox">
+        <label for="colliderCheckBox"><span id="colliderCheckBoxLabel">Show colliders</span></label>
+    </div>
+
+    <div id="thirdCameraDesc" style="position: absolute; top: 200px; right: 20px; width: 180px; color: white; display: none;">
+        <p id="cameraRotationDesc">Camera rotation - hold middle mouse button</p>
+        <p id="cameraPanningDesc">Camera panning - hold right mouse button</p>
+        <p id="cameraZoomInOutDesc">Zoom in/out - scroll middle mouse button</p>
+    </div>
+    </div>
+
+    <canvas id="renderCanvas" style="display: none;"></canvas>
+
+    <!-- Since import maps are not yet supported by all browsers, it is
+        necessary to add the polyfill es-module-shims.js
+        Source: https://threejs.org/docs/index.html#manual/en/introduction/Installation -->
+    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "gl-matrix": "https://cdn.skypack.dev/gl-matrix@3.4.3",
+                "oimo-physics": "https://cdn.jsdelivr.net/gh/saharan/OimoPhysics@1.2.3/bin/js/OimoPhysics.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="./js/bundle.js"></script>
+</body>
+
+</html>
