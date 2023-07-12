@@ -1,0 +1,21 @@
+#btnStart {
+    background-color: #04AA6D; /* Green */
+    border: none;
+    color: white;
+    font-size: 20px;
+    position: absolute;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 140px;
+    height: 40px;
+}
+
+#guiPanel {
+    position: relative;
+    width: 350px;
+    height: 350px;
+}
+
+#renderCanvas {
+    position: absolute;
+}
