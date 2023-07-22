@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>The debug drawer of Box2D-WASM colliders using Phaser3 and JavaScript</title>
+</head>
+
+<body style="caret-color: transparent;">
+    <p>Buy me a chicory coffee: <a href="https://boosty.to/ivan_8observer8/donate" target="_blank">https://boosty.to/ivan_8observer8/donate</a> This service supports PayPal.</p>
+
+    <p>GitHub repository: <a href="https://github.com/8Observer8/debug-drawer-box2dwasm-phaser3-js" target="_blank">https://github.com/8Observer8/debug-drawer-box2dwasm-phaser3-js</a></p>
+
+    <p>Playgrounds/Sandboxes:</p>
+
+    <ul>
+        <li>Replit: <a href="https://replit.com/@8Observer8/Debug-drawer-for-Box2D-WASM-using-Phaser3-and-JS" target="_blank">https://replit.com/@8Observer8/Debug-drawer-for-Box2D-WASM-using-Phaser3-and-JS</a></li>
+        <li>Plunker: <a href="https://plnkr.co/edit/0Lim08uzqEJz91V7?preview" target="_blank">https://plnkr.co/edit/0Lim08uzqEJz91V7?preview</a></li>
+        <li>Glitch: <a href="https://glitch.com/edit/#!/caterwauling-muddy-cloak" target="_blank">https://glitch.com/edit/#!/caterwauling-muddy-cloak</a></li>
+    </ul>
+
+    <!-- Since import maps are not yet supported by all browsers, its is
+        necessary to add the polyfill es-module-shims.js -->
+    <script async src="https://unpkg.com/es-module-shims@1.7.3/dist/es-module-shims.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "box2d-wasm": "https://8observer8.github.io/lib/box2d-wasm-7.0.0-box2d-2.4.1/box2d-wasm.min.js",
+                "phaser3": "https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.esm.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="./js/index.js"></script>
+</body>
+
+</html>
