@@ -62,12 +62,15 @@ function init() {
     gl.vertexAttribPointer(aPositionLocation, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(aPositionLocation);
 
+    const output = document.getElementById("output");
+
     window.onresize = () => {
         const w = gl.canvas.clientWidth;
         const h = gl.canvas.clientHeight;
         gl.canvas.width = w;
         gl.canvas.height = h;
         gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+        output.innerText = `${gl.drawingBufferWidth}, ${gl.drawingBufferHeight}, ${w}, ${h}`;
         draw();
     };
     window.onresize(null);
