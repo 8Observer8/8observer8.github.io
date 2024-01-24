@@ -62,18 +62,27 @@ function init() {
     gl.vertexAttribPointer(aPositionLocation, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(aPositionLocation);
 
-    const output = document.getElementById("output");
+    document.getElementById("output");
 
-    window.onresize = () => {
-        const w = gl.canvas.clientWidth;
-        const h = gl.canvas.clientHeight;
-        gl.canvas.width = w;
-        gl.canvas.height = h;
-        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-        output.innerText = `${gl.drawingBufferWidth}, ${gl.drawingBufferHeight}, ${w}, ${h}`;
-        draw();
-    };
-    window.onresize(null);
+    // window.onresize = () => {
+    //     gl.canvas.width = gl.canvas.clientWidth;
+    //     gl.canvas.height = gl.canvas.clientHeight;
+    //     gl.viewport(0, 0, gl.canvas.clientWidth, gl.canvas.clientHeight);
+    //     draw();
+    // };
+    // window.onresize(null);
+
+    const ro = new ResizeObserver(entries => {
+        for (const entry of entries) {
+            if (entry.target.tagName === "CANVAS") {
+                gl.canvas.width = gl.canvas.clientWidth;
+                gl.canvas.height = gl.canvas.clientHeight;
+                gl.viewport(0, 0, gl.canvas.clientWidth, gl.canvas.clientHeight);
+                draw();
+            }
+        }
+    });
+    ro.observe(gl.canvas);
 
     gl.canvas.onclick = (event) => {
         const rect = event.target.getBoundingClientRect();
