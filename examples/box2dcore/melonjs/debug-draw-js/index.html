@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug drawer of colliders using box2d/core, Melon.js, and JavaScript</title>
+</head>
+
+<body style="caret-color: transparent;">
+
+    <p><a href="https://github.com/8Observer8/debug-drawer-box2dcore-melonjs-js" target="_blank">GitHub repository with Rollup guide</a></p>
+
+    <p>Playgrounds:</p>
+
+    <ul>
+        <li><a href="https://plnkr.co/edit/KvkGgejqBojm81k8?preview" target="_blank">Plunker</a></li>
+        <li><a href="https://replit.com/@8Observer8/Debug-drawer-using-box2dcore-Melonjs-JS" target="_blank">Replit</a></li>
+        <li><a href="https://glitch.com/edit/#!/flax-befitting-caterpillar" target="_blank">Glitch</a></li>
+    </ul>
+
+    <p>Topic and discussions: <a href="https://melonjs.discourse.group/t/basic-examples-of-using-box2d-core-with-melon-js-in-javascript/59">Melon.js topic</a>, <a href="https://github.com/melonjs/melonJS/discussions/1197">Melon.js discussion</a>, <a href="https://github.com/Lusito/box2d.ts/discussions/45">box2d/core discussion</a></p>
+
+    <!-- Since import maps are not yet supported by all browsers, its is
+        necessary to add the polyfill es-module-shims.js -->
+    <script async src="https://unpkg.com/es-module-shims@1.7.3/dist/es-module-shims.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "@box2d/core": "https://cdn.skypack.dev/@box2d/core@0.10.0",
+                "melonjs": "https://cdn.jsdelivr.net/npm/melonjs@15.7.0/+esm"
+            }
+        }
+    </script>
+
+    <script type="module" src="./js/index.js"></script>
+</body>
+
+</html>
