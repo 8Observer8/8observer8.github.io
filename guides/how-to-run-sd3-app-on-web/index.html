@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>How to run SDL3 app on Web with WebAssembly</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <a href="../../index.html">Home</a>
+        <h3>How to run SDL3 app on Web with WebAssembly on Windows</h3>
+
+        <p>I will show how to run the <a href="https://github.com/Ravbug/sdl3-sample" target="_blank">sdl3-sample</a> example on Web with WebAssembly on Windows. You should have MinGW installed. Try to check if MinGW is in the Path. So type in CMD: <span style="color: red;">mingw32-make -v</span></p>
+
+        <h4>1. Download and install emsdk</h4>
+
+        <ul>
+            <li>Run CMD on C drive</li>
+            <li>Copy and execute the following command to download emsdk on your C drive: <span style="color: red;">git clone https://github.com/emscripten-core/emsdk.git</span></li>
+            <li>Go to the downloaded folder using CMD: <span style="color: red;">cd emsdk</span></li>
+            <li>Install the specific version of emsdk: <span style="color: red;">emsdk install 3.1.37</span></li>
+            <li>Activate a new version: <span style="color: red;">emsdk activate 3.1.37</span></li>
+        </ul>
+
+        <h4>2. Download and run SDL3 example</h4>
+
+        <ul>
+            <li>Run CMD in a project folder where you want to download the example</li>
+            <li>Copy and execute the following command to download the example: <span style="color: red;">git clone https://github.com/Ravbug/sdl3-sample --depth=1 --recurse-submodules</span></li>
+            <li>The source code of the example is here: 'sdl3-sample\src\main.cpp' It just shows a background color</li>
+            <li>Open 'C:\emsdk' and run 'emcmdprompt.bat' by double click:</li>
+            <img src="./assets/images/emcmdprompt.png">
+            <li>You will see this prompt:</li>
+            <img src="./assets/images/opened-prompt.png">
+            <li>Go to the 'sdl3-sample\config' folder:</li>
+            <img src="./assets/images/config-folder.png">
+            <li>using this prompt, for example:</li>
+            <img src="./assets/images/go-to-config.png">
+            <li>Type the following command in the prompt: <span style="color: red;">config-web-win</span></li>
+            <li>Wait for a few minutes. It takes 12 minutes on my laptop. You should make it only once</li>
+            <li>Open CMD in the 'sdl3-sample\build\web' and type this command: <span style="color: red;">mingw32-make</span></li>
+            <li>Wait for a few minutes. It takes 3 minutes on my laptop. You should make it every time when you change a source code in the 'sdl3-sample\src\main.cpp' fle. But it will take a few seconds</li>
+            <li>Three files will be generated that you can distributed: 'sdl-min.html', 'sdl-min.js', and 'sdl-min.wasm':</li>
+            <img src="./assets/images/three-files-that-can-be-distributed.png">
+        </ul>
+
+        <h4>3. Distribute your builds on the free 'www.netlify.com' hosting</h4>
+
+        <ul>
+            <li>Create a new folder inside of 'sdl3-sample\build\web' and copy the generated files to this filder:</li>
+            <img src="./assets/images/copy-distributed-files-to-a-new-folder.png">
+            <li>Rename 'sdl-min.html' to 'index.html':</li>
+            <img src="./assets/images/the-build-is-ready-to-be-distributed.png">
+            <li>Go to the free hosting and log in with GitHub (or just make a registration): <a href="https://www.netlify.com/">https://www.netlify.com/</a></li>
+            <img src="./assets/images/log-in.png">
+            <br>
+            <br>
+            <img src="./assets/images/log-in-with-github.png">
+            <li>It is possible to deploy from existing repository but we will deploy manually</li>
+            <li>Selet on the right side: 'Add new site' > 'Deploy manually':</li>
+            <img src="./assets/images/deploy-manually.png">
+            <li>Press 'browse to upload':</li>
+            <img src="./assets/images/browse-to-upload.png">
+            <li>Selecte a 'New folder' and press 'Upload':</li>
+            <img src="./assets/images/select-new-folder-and-upload.png">
+            <li>Press 'Upload' again:</li>
+            <img src="./assets/images/press-upload-again.png">
+            <li>Press 'Open production deploy' to open your web application:</li>
+            <img src="./assets/images/open-production-deploy.png">
+            <li>Now you can copy a link to distribute it on forums/social networks/discord and so on:</li>
+            <img src="./assets/images/distribute-a-link.png">
+            <li>If you want to make this link shorter you can google 'shorten url'</li>
+            <li>If you want to deploy again you can press 'Deploys' on the left side to refresh the page:</li>
+            <img src="./assets/images/deploy-again.png">
+            <li>And you can see 'browse to upload' when you scroll the page down:</li>
+            <img src="./assets/images/deploy-again-2.png">
+        </ul>
+    </div>
+</body>
+
+</html>
