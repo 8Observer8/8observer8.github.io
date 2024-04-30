@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>How to run SDL3 app on Android from Windows</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <br>
+        <a href="../../index.html">Home</a>
+        <br>
+        <br>
+        <p>Subscribe to news:</p>
+        <ul>
+            <li>LinkedIn: <a href="https://www.linkedin.com/in/ivan-enzhaev-23871192/" target="_blank">https://www.linkedin.com/in/ivan-enzhaev-23871192/</a></li>
+            <li>Twitter: <a href="https://twitter.com/8Observer8" target="_blank">https://twitter.com/8Observer8</a></li>
+            <li>GitHub: <a href="https://github.com/8Observer8" target="_blank">https://github.com/8Observer8</a></li>
+        </ul>
+        <br>
+
+        <h3>How to run SDL3 app on Android from Windows</h3>
+
+        <p>I will show how to run the <a href="https://github.com/Ravbug/sdl3-sample" target="_blank">sdl3-sample</a> example on Web with WebAssembly on Windows. You should have Gradle installed. Try to check if Gradle is in the Path. So type in CMD: <span style="color: red;">gradle -v</span> I have Gradle 8.1.1</p>
+
+        <h4>1. Download and install Android SDK, NDK, JDK</h4>
+
+        <ul>
+            <li>I advice to install the Qt framework. It is simple to install Android tools from Qt Creator settings. Download Qt Open Source installer here: <a href="https://www.qt.io/download-open-source">https://www.qt.io/download-open-source</a>. Scroll down and press on the 'Qt Online Installer' button:</li>
+            <img src="./assets/images/qt-online-installer.png">
+            <li>Press the 'Qt Online Installer for Windows':</li>
+            <img src="./assets/images/qt-online-installer-for-windows.png">
+            <li>In Qt Installer you should select the 'Custom Installation':</li>
+            <img src="./assets/images/qt-custom-installation.png">
+            <li>I prefer to use Qt 6.6.3 instead of Qt 6.7.0 because Qt 6.6.3 used one NDK 25 (1.31 GB). But Qt 6.7.0 uses two NDK's - v25 (1.31 GB) plus v26 (1.9 GB). At first unckeck 'Qt Design Studio' (it requires 2 GB and I think you don't need it for a while):</li>
+            <img src="./assets/images/qt-design-studio.png">
+            <li>Set the following checkboxes:</li>
+            <img src="./assets/images/qt-components-1.png">
+            <br>
+            <br>
+            <img src="./assets/images/qt-components-2.png">
+            <br>
+            <br>
+            <img src="./assets/images/qt-components-3.png">
+            <li>Do not forget to check 'Android'. Press 'Next' and so on. It requires 3.88 GB</li>
+            <li>Run 'Qt Creator'. Go to the settings: 'Edit' > 'Preferences...' > 'Device' > 'Android'</li>
+            <li>Press the following buttons to downloa Android SDK and JDK:</li>
+            <img src="./assets/images/android-sdk-and-jdk.png">
+            <li>Press the 'SDK Manager' button:</li>
+            <img src="./assets/images/sdk-manager-button.png">
+            <li>Select the following Android packages and tools and press 'Apply':</li>
+            <img src="./assets/images/android-packages-1.png">
+            <br>
+            <br>
+            <img src="./assets/images/android-packages-2.png">
+            <li>Press the following button to download OpenSSL:</li>
+            <img src="./assets/images/download-openssl.png">
+            <li>Press the 'Apply' button:</li>
+            <img src="./assets/images/apply-button.png">
+            <li>You can close the Qt Creator</li>
+        </ul>
+
+        <h4>2. Download and run SDL3 example</h4>
+
+        <ul>
+            <li>Run CMD in a project folder where you want to download the example</li>
+            <li>Copy and execute the following command to download the example: <span style="color: red;">git clone https://github.com/Ravbug/sdl3-sample --depth=1 --recurse-submodules</span></li>
+            <li>The source code of the example is here: 'sdl3-sample\src\main.cpp' It just shows a background color</li>
+            <li>Copy the 'build.gradle' that is located in the root of the 'sdl3-sample' folder:</li>
+            <img src="./assets/images/root-build-gradle.png">
+            <li>Open the 'sdl3-sample\SDL\android-project\app' folder and delete 'build.gradle' here:</li>
+            <img src="./assets/images/app-build-gradle.png">
+            <li>Paste here the 'build.gradle' you copied before (from the root of the 'sdl3-sample' folder)</li>
+            <li>Go to the 'sdl3-sample\SDL\android-project' folder and run CMD here. Execute the following command: <span style="color: red;">gradlew assembleDebug</span> It will create APK-file here: 'sdl3-sample\SDL\android-project\app\build\outputs\apk\debug':</li>
+            <img src="./assets/images/app-debug-folder.png">
+        </ul>
+
+        <h4>3. Activate a developer mode on your device to debug by USB-cable</h4>
+        <ul>
+            <li>You can execute the following command <span style="color: red;">gradlew installDebug</span> to run your application on your device connected with USB-cable. But you should to activate developer mode and USB degugging on your device at first. I can show how it looks on my old phone Redmi 4X with Android 7</li>
+            <li>Go to 'Settings' > 'About Phone' and touch 7 times on 'MIUI version':</li>
+            <img src="./assets/images/android-developer-mode.png">
+            <li>Go to 'Settings' > 'Aditional setting' > 'Developer options' and activate 'USB debugging' and 'Install via USB':</li>
+            <img src="./assets/images/usb-debugging-and-install-via-usb.png">
+            <li>Now you can run your application on your device by executing the <span style="color: red;">gradlew installDebug</span> inside of the 'sdl3-sample\SDL\android-project' folder</li>
+        </ul>
+
+        <p>Subscribe to news:</p>
+        <ul>
+            <li>LinkedIn: <a href="https://www.linkedin.com/in/ivan-enzhaev-23871192/" target="_blank">https://www.linkedin.com/in/ivan-enzhaev-23871192/</a></li>
+            <li>Twitter: <a href="https://twitter.com/8Observer8" target="_blank">https://twitter.com/8Observer8</a></li>
+            <li>GitHub: <a href="https://github.com/8Observer8" target="_blank">https://github.com/8Observer8</a></li>
+        </ul>
+
+        <p>Support me: <a href="https://8observer8.github.io/donate.html" target="_blank">https://8observer8.github.io/donate.html</a></p>
+    </div>
+</body>
+
+</html>
