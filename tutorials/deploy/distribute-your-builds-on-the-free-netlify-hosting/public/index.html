@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>Distribute your builds on the free 'www.netlify.com' hosting</title>
+    <link rel="stylesheet" href="/libs/bootstrap@5.3.3/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="menu"></div>
+
+        <h3>Distribute your builds on the free 'www.netlify.com' hosting</h3>
+
+        <ul>
+            <li>Go to the free hosting and log in with GitHub (or just make a registration): <a href="https://www.netlify.com/" target="_blank">https://www.netlify.com/</a></li>
+            <img src="./assets/images/log-in.png">
+            <br>
+            <br>
+            <img src="./assets/images/log-in-with-github.png">
+            <li>It is possible to deploy from existing repository but we will deploy manually</li>
+            <li>Selet on the right side: 'Add new site' > 'Deploy manually':</li>
+            <img src="./assets/images/deploy-manually.png">
+            <li>Press 'browse to upload':</li>
+            <img src="./assets/images/browse-to-upload.png">
+            <li>Selecte a 'New folder' and press 'Upload':</li>
+            <img src="./assets/images/select-new-folder-and-upload.png">
+            <li>Press 'Upload' again:</li>
+            <img src="./assets/images/press-upload-again.png">
+            <li>Press 'Open production deploy' to open your web application:</li>
+            <img src="./assets/images/open-production-deploy.png">
+            <li>Now you can copy a link to distribute it on forums/social networks/discord and so on:</li>
+            <img src="./assets/images/distribute-a-link.png">
+            <li>If you want to make this link shorter you can google 'shorten url'</li>
+            <li>If you want to deploy again you can press 'Deploys' on the left side to refresh the page:</li>
+            <img src="./assets/images/deploy-again.png">
+            <li>And you can see 'browse to upload' when you scroll the page down:</li>
+            <img src="./assets/images/deploy-again-2.png">
+        </ul>
+
+        <div id="subscribe"></div>
+        <div id="donate"></div>
+    </div>
+
+    <!-- Since import maps are not yet supported by all browsers, it is
+        necessary to add the polyfill es-module-shims.js -->
+    <script async src="/libs/es-module-shims@1.10.0/es-module-shims.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "ejs": "/libs/ejs@3.1.10/ejs.min.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="./js/index.js"></script>
+</body>
+
+</html>

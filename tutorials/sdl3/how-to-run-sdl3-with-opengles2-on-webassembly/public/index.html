@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>How to run SDL3 with OpenGL ES 2.0 on WebAssembly</title>
+    <link rel="stylesheet" href="/libs/bootstrap@5.3.3/bootstrap.min.css">
+    <link rel="stylesheet" href="/libs/highlightjs@11.9.0/styles/base16/ia-dark.min.css">
+    <script src="/libs/highlightjs@11.9.0/highlight.min.js"></script>
+    <script src="/libs/highlightjs-line-numbers@2.8.0/highlightjs-line-numbers.min.js"></script>
+
+    <style>
+        .hljs-ln-line {
+            padding-left: 10px;
+        }
+
+        .hljs-ln-numbers {
+            text-align: right;
+            border-right: 1px solid #CCC;
+            margin-right: 10px;
+        }
+
+        .hljs-ln-n {
+            padding-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="menu"></div>
+
+        <h3>How to run SDL3 with OpenGL ES 2.0 on WebAssembly</h3>
+
+        <p>You should go through this guide first: <a href="/tutorials/sdl3/how-to-run-sd3-app-on-web/public/index.html" target="_blank">How to run SDL3 app on Web with WebAssembly</a></p>
+
+        <p>This guide should be completed the next: <a href="/tutorials/sdl3/convert-sdl3-api-rendering-to-opengles2-rendering/public/index.html" target="_blank">Convert rendering using the SDL3 API to rendering using OpenGL ES 2.0</a></p>
+
+        <p>Now you can rebuild the project. Open CMD in the 'sdl3-sample\build\web' and type this command: <span style="color: red;">mingw32-make</span></p>
+
+        <div id="subscribe"></div>
+        <div id="donate"></div>
+    </div>
+
+    <script>
+        hljs.highlightAll();
+        hljs.initLineNumbersOnLoad();
+    </script>
+
+    <!-- Since import maps are not yet supported by all browsers, it is
+        necessary to add the polyfill es-module-shims.js -->
+    <script async src="/libs/es-module-shims@1.10.0/es-module-shims.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "ejs": "/libs/ejs@3.1.10/ejs.min.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="./js/index.js"></script>
+</body>

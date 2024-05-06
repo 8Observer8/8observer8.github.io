@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>How to run SDL3 with OpenGL ES 2.0 on Android</title>
+    <link rel="stylesheet" href="/libs/bootstrap@5.3.3/bootstrap.min.css">
+    <link rel="stylesheet" href="/libs/highlightjs@11.9.0/styles/base16/ia-dark.min.css">
+    <script src="/libs/highlightjs@11.9.0/highlight.min.js"></script>
+    <script src="/libs/highlightjs@11.9.0/languages/cmake.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div id="menu"></div>
+
+        <h3>How to run SDL3 with OpenGL ES 2.0 on Android</h3>
+
+        <ul>
+            <li>You should go through this guide first: <a href="/tutorials/sdl3/how-to-run-sdl3-app-on-android/public/index.html" target="_blank">How to run SDL3 app on Android</a></li>
+            <li>This guide should be completed the next: <a href="/tutorials/sdl3/convert-sdl3-api-rendering-to-opengles2-rendering/public/index.html" target="_blank">Convert rendering using the SDL3 API to rendering using OpenGL ES 2.0</a></li>
+            <li>
+                <p>Open 'sdl3-sample/CMakeLists.txt' and set 'target_link_libraries' adding 'android EGL GLESv2':<p>
+                <p>Old code:</p>
+                <pre><code class="language-cmake">target_link_libraries(${EXECUTABLE_NAME} PUBLIC SDL3::SDL3)</code></pre>
+                <p>New code:</p>
+                <pre><code class="language-cmake">target_link_libraries(${EXECUTABLE_NAME} PUBLIC SDL3::SDL3 android EGL GLESv2)</code></pre>
+            </li>
+        </ul>
+
+        <h4>Activate a developer mode on your device to debug with USB-cable</h4>
+
+        <ul>
+            <li>Complete the following tutorial: <a href="/tutorials/deploy/activate-a-developer-mode-on-android-to-debug-with-usb-cable/public/index.html" target="_blank">Activate a developer mode on your device to debug with USB-cable</a></li>
+        </ul>
+
+        <p>Now you can run your application on your device by executing the <span style="color: red;">gradlew installDebug</span> inside of the 'sdl3-sample\SDL\android-project' folder</p>
+
+        <div id="subscribe"></div>
+        <div id="donate"></div>
+    </div>
+
+    <script>
+        hljs.highlightAll();
+    </script>
+
+    <!-- Since import maps are not yet supported by all browsers, it is
+        necessary to add the polyfill es-module-shims.js -->
+    <script async src="/libs/es-module-shims@1.10.0/es-module-shims.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "ejs": "/libs/ejs@3.1.10/ejs.min.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="./js/index.js"></script>
+</body>
+
+</html>

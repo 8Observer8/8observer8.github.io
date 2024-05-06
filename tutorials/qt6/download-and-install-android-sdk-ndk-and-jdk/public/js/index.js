@@ -1,0 +1,14 @@
+import 'ejs';
+
+const menuResponse = await fetch('../../../../templates/menu.ejs');
+const menuTemplate = await menuResponse.text();
+document.getElementById('menu').innerHTML = menuTemplate;
+
+const subscribeResponse = await fetch('../../../../templates/subscribe.ejs');
+const subscribeTemplate = await subscribeResponse.text();
+document.getElementById('subscribe').innerHTML = subscribeTemplate;
+
+const donateResponse = await fetch('../../../../templates/donate.ejs');
+const donateTemplate = await donateResponse.text();
+document.getElementById('donate').innerHTML = donateTemplate;
+//# sourceMappingURL=index.js.map

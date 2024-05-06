@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>How to run SDL3 app on Web with WebAssembly</title>
+    <link rel="stylesheet" href="/libs/bootstrap@5.3.3/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="menu"></div>
+
+        <h3>How to run SDL3 app on Web with WebAssembly</h3>
+
+        <p>I will show how to run the <a href="https://github.com/Ravbug/sdl3-sample" target="_blank">sdl3-sample</a> example on Web with WebAssembly. You should have MinGW installed. Try to check if MinGW is in the Path. So type in CMD: <span style="color: red;">mingw32-make -v</span></p>
+
+        <h4>1. Download and install emsdk</h4>
+
+        <ul>
+            <li>Run CMD on C drive</li>
+            <li>Copy and execute the following command to download emsdk on your C drive: <span style="color: red;">git clone https://github.com/emscripten-core/emsdk.git</span></li>
+            <li>Go to the downloaded folder using CMD: <span style="color: red;">cd emsdk</span></li>
+            <li>Install the specific version of emsdk: <span style="color: red;">emsdk install 3.1.37</span></li>
+            <li>Activate a new version: <span style="color: red;">emsdk activate 3.1.37</span></li>
+        </ul>
+
+        <h4>2. Download and run SDL3 example</h4>
+
+        <ul>
+            <li>Run CMD in a project folder where you want to download the example</li>
+            <li>Copy and execute the following command to download the example: <span style="color: red;">git clone https://github.com/Ravbug/sdl3-sample --depth=1 --recurse-submodules</span></li>
+            <li>The source code of the example is here: 'sdl3-sample\src\main.cpp' It just shows a background color</li>
+            <li>Open 'C:\emsdk' and run 'emcmdprompt.bat' by double click:</li>
+            <img src="./assets/images/emcmdprompt.png">
+            <li>You will see this prompt:</li>
+            <img src="./assets/images/opened-prompt.png">
+            <li>Go to the 'sdl3-sample\config' folder:</li>
+            <img src="./assets/images/config-folder.png">
+            <li>using this prompt, for example:</li>
+            <img src="./assets/images/go-to-config.png">
+            <li>Type the following command in the prompt: <span style="color: red;">config-web-win</span></li>
+            <li>Wait for a few minutes. It takes 12 minutes on my laptop. You should make it only once</li>
+            <li>Open CMD in the 'sdl3-sample\build\web' and type this command: <span style="color: red;">mingw32-make</span></li>
+            <li>Wait for a few minutes. It takes 3 minutes on my laptop. You should make it every time when you change a source code in the 'sdl3-sample\src\main.cpp' fle. But it will take a few seconds</li>
+            <li>Three files will be generated that you can distributed: 'sdl-min.html', 'sdl-min.js', and 'sdl-min.wasm':</li>
+            <img src="./assets/images/three-files-that-can-be-distributed.png">
+            <li>Create a new folder inside of 'sdl3-sample\build\web' and copy the generated files to this filder:</li>
+            <img src="./assets/images/copy-distributed-files-to-a-new-folder.png">
+            <li>Rename 'sdl-min.html' to 'index.html':</li>
+            <img src="./assets/images/the-build-is-ready-to-be-distributed.png">
+        </ul>
+
+        <h4>3. Distribute your builds on the free 'www.netlify.com' hosting</h4>
+
+        <ul>
+            <li><a href="/tutorials/deploy/distribute-your-builds-on-the-free-netlify-hosting/public/index.html" target="_blank">Distribute your builds on the free 'www.netlify.com' hosting</a></li>
+        </ul>
+
+        <div id="subscribe"></div>
+        <div id="donate"></div>
+    </div>
+
+    <!-- Since import maps are not yet supported by all browsers, it is
+        necessary to add the polyfill es-module-shims.js -->
+    <script async src="/libs/es-module-shims@1.10.0/es-module-shims.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "ejs": "/libs/ejs@3.1.10/ejs.min.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="./js/index.js"></script>
+</body>
+
+</html>

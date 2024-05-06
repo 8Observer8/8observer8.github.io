@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>Download and install Android SDK, NDK, JDK</title>
+    <link rel="stylesheet" href="/libs/bootstrap@5.3.3/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="menu"></div>
+
+        <h3>Download and install Android SDK, NDK, JDK</h3>
+
+        <ul>
+            <li>Download Qt Open Source installer here: <a href="https://www.qt.io/download-open-source" target="_blank">https://www.qt.io/download-open-source</a>. Scroll down and press on the 'Qt Online Installer' button:</li>
+            <img src="./assets/images/qt-online-installer.png">
+            <li>Press the 'Qt Online Installer for Windows':</li>
+            <img src="./assets/images/qt-online-installer-for-windows.png">
+            <li>In Qt Installer you should select the 'Custom Installation':</li>
+            <img src="./assets/images/qt-custom-installation.png">
+            <li>I prefer to use Qt 6.6.3 instead of Qt 6.7.0 because Qt 6.6.3 used one NDK 25 (1.31 GB). But Qt 6.7.0 uses two NDK's - v25 (1.31 GB) plus v26 (1.9 GB). At first unckeck 'Qt Design Studio' (it requires 2 GB and I think you don't need it for a while):</li>
+            <img src="./assets/images/qt-design-studio.png">
+            <li>Set the following checkboxes:</li>
+            <img src="./assets/images/qt-components-1.png">
+            <br>
+            <br>
+            <img src="./assets/images/qt-components-2.png">
+            <br>
+            <br>
+            <img src="./assets/images/qt-components-3.png">
+            <li>Do not forget to check 'Android'. Press 'Next' and so on. It requires 3.88 GB</li>
+            <li>Run 'Qt Creator'. Go to the settings: 'Edit' > 'Preferences...' > 'Device' > 'Android'</li>
+            <li>Press the following buttons to downloa Android SDK and JDK:</li>
+            <img src="./assets/images/android-sdk-and-jdk.png">
+            <li>Press the 'SDK Manager' button:</li>
+            <img src="./assets/images/sdk-manager-button.png">
+            <li>Select the following Android packages and tools and press 'Apply':</li>
+            <img src="./assets/images/android-packages-1.png">
+            <br>
+            <br>
+            <img src="./assets/images/android-packages-2.png">
+            <li>Press the following button to download OpenSSL:</li>
+            <img src="./assets/images/download-openssl.png">
+            <li>Press the 'Apply' button:</li>
+            <img src="./assets/images/apply-button.png">
+        </ul>
+
+        <div id="subscribe"></div>
+        <div id="donate"></div>
+    </div>
+
+    <!-- Since import maps are not yet supported by all browsers, it is
+        necessary to add the polyfill es-module-shims.js -->
+    <script async src="/libs/es-module-shims@1.10.0/es-module-shims.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "ejs": "/libs/ejs@3.1.10/ejs.min.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="./js/index.js"></script>
+</body>
+
+</html>

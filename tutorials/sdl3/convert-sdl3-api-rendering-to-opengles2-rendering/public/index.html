@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>Convert rendering using the SDL3 API to rendering using OpenGL ES 2.0</title>
+    <link rel="stylesheet" href="/libs/bootstrap@5.3.3/bootstrap.min.css">
+    <link rel="stylesheet" href="/libs/highlightjs@11.9.0/styles/base16/ia-dark.min.css">
+    <script src="/libs/highlightjs@11.9.0/highlight.min.js"></script>
+    <script src="/libs/highlightjs-line-numbers@2.8.0/highlightjs-line-numbers.min.js"></script>
+
+    <style>
+        .hljs-ln-line {
+            padding-left: 10px;
+        }
+
+        .hljs-ln-numbers {
+            text-align: right;
+            border-right: 1px solid #CCC;
+            margin-right: 10px;
+        }
+
+        .hljs-ln-n {
+            padding-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="menu"></div>
+
+        <h3>Convert rendering using the SDL3 API to rendering using OpenGL ES 2.0</h3>
+
+        <p>Currently we have the following code in the 'main.cpp' from this folder: <a href="https://github.com/Ravbug/sdl3-sample/tree/main/src">sdl3-sample/src/</a></p>
+
+        <details>
+            <summary>main.cpp</summary>
+            <pre><code class="language-cpp">#include &lt;SDL3/SDL.h&gt;
+#include &lt;SDL3/SDL_main.h&gt;
+#include &lt;cmath&gt;
+
+struct AppContext {
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+    SDL_bool app_quit = SDL_FALSE;
+};
+
+int SDL_Fail(){
+    SDL_LogError(SDL_LOG_CATEGORY_CUSTOM, "Error %s", SDL_GetError());
+    return -1;
+}
+
+int SDL_AppInit(void** appstate, int argc, char* argv[]) {
+    // init the library, here we make a window so we only need the Video capabilities.
+    if (SDL_Init(SDL_INIT_VIDEO)){
+        return SDL_Fail();
+    }
+    
+    // create a window
+    SDL_Window* window = SDL_CreateWindow("Window", 352, 430, SDL_WINDOW_RESIZABLE);
+    if (!window){
+        return SDL_Fail();
+    }
+    
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL, 0);
+    if (!renderer){
+        return SDL_Fail();
+    }
+    
+    // print some information about the window
+    SDL_ShowWindow(window);
+    {
+        int width, height, bbwidth, bbheight;
+        SDL_GetWindowSize(window, &width, &height);
+        SDL_GetWindowSizeInPixels(window, &bbwidth, &bbheight);
+        SDL_Log("Window size: %ix%i", width, height);
+        SDL_Log("Backbuffer size: %ix%i", bbwidth, bbheight);
+        if (width != bbwidth){
+            SDL_Log("This is a highdpi environment.");
+        }
+    }
+
+    // set up the application data
+    *appstate = new AppContext{
+       window,
+       renderer,
+    };
+    
+    SDL_Log("Application started successfully!");
+
+    return 0;
+}
+
+int SDL_AppEvent(void *appstate, const SDL_Event* event) {
+    auto* app = (AppContext*)appstate;
+    
+    if (event->type == SDL_EVENT_QUIT) {
+        app->app_quit = SDL_TRUE;
+    }
+
+    return 0;
+}
+
+int SDL_AppIterate(void *appstate) {
+    auto* app = (AppContext*)appstate;
+
+    // draw a color
+    auto time = SDL_GetTicks() / 1000.f;
+    auto red = (std::sin(time) + 1) / 2.0 * 255;
+    auto green = (std::sin(time / 2) + 1) / 2.0 * 255;
+    auto blue = (std::sin(time) * 2 + 1) / 2.0 * 255;
+    
+    SDL_SetRenderDrawColor(app->renderer, red, green, blue, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(app->renderer);
+    SDL_RenderPresent(app->renderer);
+
+    return app->app_quit;
+}
+
+void SDL_AppQuit(void* appstate) {
+    auto* app = (AppContext*)appstate;
+    if (app) {
+        SDL_DestroyRenderer(app->renderer);
+        SDL_DestroyWindow(app->window);
+        delete app;
+    }
+
+    SDL_Quit();
+    SDL_Log("Application quit successfully!");
+}
+</code></pre>
+        </details>
+
+        <br>
+        <p>Let's change it by step by step to render with OpenGL ES 2.0. Include the "SDL_opengles2.h" header file:</p>
+
+        <p>Old code:</p>
+
+        <pre><code class="language-cpp">#include &lt;SDL3/SDL.h&gt;
+#include &lt;SDL3/SDL_main.h&gt;
+#include &lt;cmath&gt;
+    </code></pre>
+
+        <p>New code:</p>
+
+        <pre><code class="language-cpp">#include &lt;SDL3/SDL.h&gt;
+#include &lt;SDL3/SDL_main.h&gt;
+#include &lt;SDL3/SDL_opengles2.h&gt;
+#include &lt;cmath&gt;
+    </code></pre>
+
+        <p>Delete 'SDL_Renderer' and add 'SDL_GLContext' in the 'AppContext' structure:</p>
+
+        <p>Old code:</p>
+
+        <pre><code class="language-cpp">struct AppContext
+{
+    SDL_Window *window;
+    SDL_Renderer* renderer;
+    SDL_bool app_quit = SDL_FALSE;
+};</code></pre>
+
+        <p>New code:</p>
+
+        <pre><code class="language-cpp">struct AppContext
+{
+    SDL_Window *window;
+    SDL_GLContext glcontext;
+    SDL_bool app_quit = SDL_FALSE;
+};</code></pre>
+
+        <p>Add the 'SDL_WINDOW_OPENGL' flag to the 'SDL_CreateWindow' function inside of the 'SDL_AppInit' function:</p>
+
+        <p>Old code:</p>
+
+        <pre><code class="language-cpp">int SDL_AppInit(void **appstate, int argc, char *argv[])
+{
+    // init the library, here we make a window so we only need the Video capabilities.
+    if (SDL_Init(SDL_INIT_VIDEO))
+    {
+        return SDL_Fail();
+    }
+
+    // create a window
+    SDL_Window *window = SDL_CreateWindow("Window", 352, 430, SDL_WINDOW_RESIZABLE);</code></pre>
+
+        <p>New code:</p>
+
+        <pre><code class="language-cpp">int SDL_AppInit(void **appstate, int argc, char *argv[])
+{
+    // init the library, here we make a window so we only need the Video capabilities.
+    if (SDL_Init(SDL_INIT_VIDEO))
+    {
+        return SDL_Fail();
+    }
+
+    // create a window
+    SDL_Window *window = SDL_CreateWindow("Window", 352, 430,
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);</code></pre>
+
+        <p>Remove the "SDL_Renderer" creation and add the "SDL_GLContext" creation:</p>
+
+        <p>Old code:</p>
+
+        <pre><code class="language-cpp">    SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL, 0);
+    if (!renderer)
+    {
+        return SDL_Fail();
+    }</code></pre>
+
+        <p>New code:</p>
+
+        <pre><code class="language-cpp">    SDL_GLContext glcontext = SDL_GL_CreateContext(window);
+    if (!glcontext)
+    {
+        return SDL_Fail();
+    }</code></pre>
+
+        <p>Note. 'glcontext' is not a pointer.</p>
+
+        <p>Replace 'renderer' with 'glcontext' in 'AppContext':</p>
+
+        <p>Old code:</p>
+
+        <pre><code class="language-cpp">    // set up the application data
+    *appstate = new AppContext {
+        window,
+        renderer,
+    };</code></pre>
+
+        <p>New code:</p>
+
+        <pre><code class="language-cpp">    // set up the application data
+    *appstate = new AppContext {
+        window,
+        glcontext,
+    };</code></pre>
+
+        <p>Remove the "* 255" in the "SDL_AppIterate()" function where the colors are calculated:</p>
+
+        <p>Old code:</p>
+
+        <pre><code class="language-cpp">int SDL_AppIterate(void *appstate)
+{
+    auto *app = (AppContext *)appstate;
+
+    // draw a color
+    auto time = SDL_GetTicks() / 1000.f;
+    auto red = (std::sin(time) + 1) / 2.0 * 255;
+    auto green = (std::sin(time / 2) + 1) / 2.0 * 255;
+    auto blue = (std::sin(time) * 2 + 1) / 2.0 * 255;</code></pre>
+
+        <p>New code:</p>
+
+        <pre><code class="language-cpp">int SDL_AppIterate(void *appstate)
+{
+    auto *app = (AppContext *)appstate;
+
+    // draw a color
+    auto time = SDL_GetTicks() / 1000.f;
+    auto red = (std::sin(time) + 1) / 2.0;
+    auto green = (std::sin(time / 2) + 1) / 2.0;
+    auto blue = (std::sin(time) * 2 + 1) / 2.0;</code></pre>
+
+        <p>Replace SDL Renderer functions with OpenGL functions:</p>
+
+        <p>Old code:</p>
+
+        <pre><code class="language-cpp">    SDL_SetRenderDrawColor(app->renderer, red, green, blue, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(app->renderer);
+    SDL_RenderPresent(app->renderer);</code></pre>
+
+        <p>New code:</p>
+
+        <pre><code class="language-cpp">    glClearColor(red, green, blue, 1.f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    // Draw your stuff here
+    SDL_GL_SwapWindow(app->window);</code></pre>
+
+        <p>Replace 'SDL_DestroyRenderer' with 'SDL_GL_DeleteContext' in 'SDL_AppQuit':</p>
+
+        <p>Old code:</p>
+
+        <pre><code class="language-cpp">void SDL_AppQuit(void *appstate)
+{
+    auto *app = (AppContext *)appstate;
+    if (app)
+    {
+        SDL_DestroyRenderer(app->renderer);
+        SDL_DestroyWindow(app->window);
+        delete app;
+    }
+
+    SDL_Quit();
+    SDL_Log("Application quit successfully!");
+}</code></pre>
+
+        <p>New code:</p>
+
+        <pre><code class="language-cpp">void SDL_AppQuit(void *appstate)
+{
+    auto *app = (AppContext *)appstate;
+    if (app)
+    {
+        SDL_GL_DeleteContext(app->glcontext);
+        SDL_DestroyWindow(app->window);
+        delete app;
+    }
+
+    SDL_Quit();
+    SDL_Log("Application quit successfully!");
+}</code></pre>
+
+        <p>Follow the next tutorials to run the example above on Android and WebAssembly:</p>
+
+        <p>Android:</p>
+
+        <ul>
+            <li><a href="./tutorials/sdl3/how-to-run-sdl3-app-on-android/public/index.html">How to run SDL3 app on Android</a></li>
+            <li><a href="./tutorials/sdl3/how-to-run-sdl3-with-opengles2-on-android/public/index.html">How to run SDL3 with OpenGL ES 2.0 on Android</a></li>
+        </ul>
+
+        <p>WebAssembly:</p>
+
+        <ul>
+            <li><a href="./tutorials/sdl3/how-to-run-sd3-app-on-web/public/index.html">How to run SDL3 app on Web with WebAssembly</a></li>
+            <li><a href="./tutorials/sdl3/how-to-run-sdl3-with-opengles2-on-webassembly/public/index.html">How to run SDL3 with OpenGL ES 2.0 on WebAssembly</a></li>
+        </ul>
+
+        <div id="subscribe"></div>
+        <div id="donate"></div>
+    </div>
+
+    <script>
+        hljs.highlightAll();
+        hljs.initLineNumbersOnLoad();
+    </script>
+
+    <!-- Since import maps are not yet supported by all browsers, it is
+        necessary to add the polyfill es-module-shims.js -->
+    <script async src="/libs/es-module-shims@1.10.0/es-module-shims.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "ejs": "/libs/ejs@3.1.10/ejs.min.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="./js/index.js"></script>
+</body>
