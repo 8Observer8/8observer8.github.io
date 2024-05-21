@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>Building and running the project in debug and release for client</title>
+    <link rel="stylesheet" href="/libs/bootstrap@5.3.3/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="menu"></div>
+
+        <h3>Building and running the project in debug and release for client</h3>
+
+        <ul>
+            <li>Download and install a code editor like Sublime Text or VSCode. I prefer Sublime Text. You can even use Nodepad++</li>
+            <li>Download and install <a href="https://nodejs.org/en/download/prebuilt-installer">Node.js</a> using prebuild installer - it includes NPM. NPM is used to install packages</li>
+            <li>Install the next packages globally with the folloing command in the CMD: <span style="color: red;">npm i -g http-server rollup uglify-js</span></li>
+            <li>To add the Rollup bin folder to the Path type this command to know where npm was installed <span style="color: red;">npm config get prefix</span>. This command will show you the npm location. You will find the "node_modules" folder there. Go to the "rollup/dist/bin" folder and copy this path, for example for me: `C:\Users\8Observer8\AppData\Roaming\npm\node_modules\rollup\dist\bin`. Add this folder to the Path variable. Rerun the CMD</li>
+            <li>Download any JavaScript project without the server side from <a href="https://github.com/8Observer8?tab=repositories">my repository</a>. These projects end with "js" and do not contain the "src/server" folder</li>
+            <li>Go in the CMD to the project folder where the "rollup.config.js" file is located</li>
+            <li>Start the development mode with the following command: <span style="color: red;">npm run dev</span> Rollup will start watching changes in the project source files</li>
+            <li>Open another CMD in the current folder and run the server using the following command: <span style="color: red;">http-server -c-1</span></li>
+            <li>Go to the browser and type the following link: <span style="color: red;">localhost:8080</span> The project will be running in your browser</li>
+            <li>To make a release build of the client you should to stop "npm run dev" by pressing Ctrl+C. Type <span style="color: red;">npm run release</span>. The compressed "index.js" file will be created in the "public/js" folder. Refresh the browser page by clicking to the reload button with right mouse button (it is for Chrome and Edge) and select "Empty Cache and Hard Reload"</li>
+        </ul>
+
+        <div id="subscribe"></div>
+        <div id="donate"></div>
+    </div>
+
+    <!-- Since import maps are not yet supported by all browsers, it is
+        necessary to add the polyfill es-module-shims.js -->
+    <script async src="/libs/es-module-shims@1.10.0/es-module-shims.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "ejs": "/libs/ejs@3.1.10/ejs.min.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="./js/index.js"></script>
+</body>
+
+</html>
