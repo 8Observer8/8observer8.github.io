@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>Notes about Tut3D</title>
+    <link rel="stylesheet" href="/libs/bootstrap@5.3.3/bootstrap.min.css">
+    <link rel="stylesheet" href="/libs/highlightjs@11.9.0/styles/base16/ia-dark.min.css">
+    <script src="/libs/highlightjs@11.9.0/highlight.min.js"></script>
+    <script src="/libs/highlightjs@11.9.0/languages/bash.min.js"></script>
+    <script src="/libs/highlightjs-line-numbers@2.8.0/highlightjs-line-numbers.min.js"></script>
+    <style>
+        .hljs-ln-line {
+            padding-left: 10px;
+        }
+
+        .hljs-ln-numbers {
+            text-align: right;
+            border-right: 1px solid #CCC;
+            margin-right: 10px;
+        }
+
+        .hljs-ln-n {
+            padding-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="menu"></div>
+
+        <h3>Notes about Tut3D</h3>
+
+        <p>Some notes about <a href="https://monstroussoftware.github.io/2023/11/01/Tutorial-3D-step1.html">Tutorial on creating a 3D game with LibGDX</a>. I use Sublime Text 4 and CMD. This is good for badget laptops.</p>
+
+        <h4>Documentation</h4>
+
+        <ul>
+            <li>Download the <span style="color: red;">gdx-1.12.1-javadoc.jar</span> file <a href="https://repo1.maven.org/maven2/com/badlogicgames/gdx/gdx/1.12.1/">here</a> Unzip it with WinRAR. Place unzipped folder to some directory, for example to: <span style="color: red;">E:/_Docs</span>. Open the index.html: <span style="color: red;">E:/_Docs/gdx-1.12.1-javadoc/index.html</span> just by double click. Save opened page to bookmarks of your browser. For example, Chrome has good bookmarks</li>
+            <li>Download a source code from <a href="https://github.com/libgdx/libgdx">libGDX repository</a></li>
+            <li><a href="https://javadoc.io/doc/com.badlogicgames.gdx">The online documentation</a> is not available sometimes</li>
+        </ul>
+
+        <h4><a href="https://monstroussoftware.github.io/2023/11/01/Tutorial-3D-step1.html" target="_blank">Step 1 - Lift off</a></h4>
+
+        <h5>How to run gdx-liftoff from the command line (CMD or Far Manager)</h5>
+
+        <ul>
+            <li>Download <a href="https://github.com/libgdx/gdx-liftoff/releases">gdx-liftoff-1.12.1.8</a></li>
+            <li>Create the <span style="color: red;">E:\Program Files (installed)\Libgdx Tools</span> folder and copy <span style="color: red;">gdx-liftoff-1.12.1.8.jar</span> there</li>
+            <li>Create the <span style="color: red;">E:\bats</span> folder. Create the <span style="color: red;">gdx-liftoff.bat</span> file there. Copy the following content to the created file:</li>
+<pre><code class="language-bash">start "" "E:\Program Files (installed)\Libgdx Tools\gdx-liftoff-1.12.1.8.jar"
+</code></pre>
+            <li>Rerun CMD or Far Manager</li>
+            <li>Type the following command: <span style="color: red;">gdx-liftoff</span></li>
+        </ul>
+
+        <h5>Settings for gdx-liftoff</h5>
+
+        <p>I prefer HTML/GWT instead of HTML/TeaVM. Because:</p>
+
+        <ol>
+            <li>GWT is built faster</li>
+            <li>I can use "http-server" because GWT is built to the "dist" folder with the command <span style="color: red;">gradlew html:dist</span></li>
+            <li>It doesn't require to set "config.width = 0" and "config.height = 0"</li>
+        </ol>
+
+        <details>
+            <summary>Set "Platforms" (click to show a screenshot)</summary>
+            <img src="./assets/images/gdx-liftoff-settings-platforms.png">
+        </details>
+
+        <details>
+            <summary>Set "Extensions" (click to show a screenshot)</summary>
+            <img src="./assets/images/gdx-liftoff-settings-extensions.png">
+        </details>
+
+        <details>
+            <summary>Set "Third party" (click to show a screenshot)</summary>
+            <img src="./assets/images/gdx-liftoff-settings-third-party.png">
+        </details>
+
+        <details>
+            <summary>Set "Templates" (click to show a screenshot)</summary>
+            <img src="./assets/images/gdx-liftoff-settings-templates.png">
+        </details>
+
+        <details>
+            <summary>Set "Andvanced" (click to show a screenshot)</summary>
+        <img src="./assets/images/gdx-liftoff-settings-advanced.png">
+        </details>
+        
+        <br>
+        <ul>
+            <li>Press the "Generate Project!" button</li>
+            <li>Rename "FirstScene.java" to "GameScene.java"</li>
+            <li>Add the following content to the files:</li>
+        </ul>
+
+        <p>Main.java</p>
+
+<pre><code class="language-java">package com.ivan_8observer8.tut3d;
+
+import com.badlogic.gdx.Game;
+
+/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+public class Main extends Game {
+    @Override
+    public void create() {
+        setScreen(new GameScreen());
+    }
+}
+</code></pre>
+
+        <details>
+            <summary>GameScene.java (click here to show a source code)</summary>
+<pre><code class="language-java">package com.ivan_8observer8.tut3d;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.*;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ScreenUtils;
+
+/** First screen of the application. Displayed after the application is created. */
+public class GameScreen extends ScreenAdapter {
+    public final Color BACKGROUND_COLOUR = new Color(153f/255f, 220f/255f, 236f/255f, 1.0f);
+
+    private PerspectiveCamera cam;
+    private CameraInputController camController;
+    private Environment environment;
+    private Model modelGround;
+    private Texture textureGround;
+    private Array<ModelInstance> instances;
+    private ModelBatch modelBatch;
+
+    @Override
+    public void show() {
+        // Prepare your screen here.
+        cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight());
+        cam.position.set(10f, 1.5f, 5f);
+        cam.lookAt(0,0,0);
+        cam.near = 1f;
+        cam.far = 300f;
+        cam.update();
+
+        camController = new CameraInputController(cam);
+        Gdx.input.setInputProcessor(camController);
+
+        environment = new Environment();
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.6f, 0.6f, 0.6f, 1f));
+        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+
+        String textureGroundPath = "textures/Stylized_Stone_Floor_005_basecolor.jpg";
+        textureGround = new Texture(Gdx.files.internal(textureGroundPath), true);
+        textureGround.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        textureGround.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        TextureRegion textureRegion = new TextureRegion(textureGround);
+        int repeats = 10;
+        textureRegion.setRegion(0, 0, textureGround.getWidth() * repeats,
+            textureGround.getHeight() * repeats);
+
+        ModelBuilder modelBuilder = new ModelBuilder();
+
+        // create model
+        modelGround = modelBuilder.createBox(100f, 1f, 100f,
+            new Material(TextureAttribute.createDiffuse(textureRegion)),
+            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal |
+            VertexAttributes.Usage.TextureCoordinates);
+
+        // create and position model instances
+
+        instances = new Array<>();
+        instances.add(new ModelInstance(modelGround, 0, -1, 0)); // 'table top' surface
+
+        modelBatch = new ModelBatch();
+    }
+
+    @Override
+    public void render(float delta) {
+        // Draw your screen here. "delta" is the time since last render in seconds.
+
+        // update
+        camController.update();
+
+        // render
+        ScreenUtils.clear(BACKGROUND_COLOUR, true);
+        modelBatch.begin(cam);
+        modelBatch.render(instances, environment);
+        modelBatch.end();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        // Resize your screen here. The parameters represent the new window size.
+        cam.viewportWidth = width;
+        cam.viewportHeight = height;
+        cam.update();
+    }
+
+    // @Override
+    // public void pause() {
+    //     // Invoked when your application is paused.
+    // }
+
+    // @Override
+    // public void resume() {
+    //     // Invoked when your application is resumed after pause.
+    // }
+
+    @Override
+    public void hide() {
+        // This method is called when another screen replaces this one.
+        dispose();
+    }
+
+    @Override
+    public void dispose() {
+        // Destroy screen's assets here.
+        modelBatch.dispose();
+        modelGround.dispose();
+        textureGround.dispose();
+    }
+}
+</code></pre>
+        </details>
+        <br>
+
+        <h5>How to build for Desktop, Android, and Web</h5>
+
+        <ul>
+            <li>Install Android SDK, NDK, and JDK. I advice to install the Qt framework. It is simple to install Android tools from Qt Creator settings. Complete the following tutorial: <a href="/tutorials/qt6/download-and-install-android-sdk-ndk-and-jdk/public/index.html" target="_blank">Download and install Android SDK, NDK, JDK</a></li>
+            <li>Open CMD or Far Manager. You can open cmd in the root folder of the project by typing <span style="color: red;">cmd</span> in text text field (and press Enter):</li>
+            <img src="./assets/images/open-cmd.png">
+            <li>Type the following command to run on Desktop: <span style="color: red;">gradlew lwjgl3:run</span></li>
+            <li>Type the following command to create the executable ".jar" file for Desktop: <span style="color: red;">gradlew lwjgl3:run</span></li>
+            <li>Type the following command to install on real device connected with USB-cable or on running Android emulator<span style="color: red;">gradlew android:installDebug</span>. See my step by step tutorial <a href="/tutorials/deploy/activate-a-developer-mode-on-android-to-debug-with-usb-cable/public/index.html" target="_blank">Activate a developer mode on your device to debug with USB-cable</a></li>
+            <li>Type the following command to create a debug APK <span style="color: red;">gradlew android:assembleDebug</span></li>
+            <li>Type the following command to create a release APK <span style="color: red;">gradlew android:assembleRelease</span></li>
+            <li>Type the following command to create a web application: <span style="color: red;">gradlew html:dist</span>. Install <a href="https://nodejs.org/en/download/prebuilt-installer">Node.js</a>. Type in CMD <span style="color: red;">npm i -g http-server</span>. Run "http-server" inside of "tut3d/html", type: <span style="color: red;">http-server -c-1</span>, and go to the browser and type in the address field: <span style="color: red;">localhost:8080/build/dist/index.html</span>. When you changed something in your project: make a build again: <span style="color: red;">gradlew html:dist</span>, go to browser (where you see the privious scene), open a debug console of the browser: "Ctrl+Shift+J" (in Chrome and Edge) and press with RMB on the reload button and select "Empty Cache and Hard Reload". See my step by step tutorial how to deploy your application on the free 'www.netlify.com' hosting: <a href="/tutorials/deploy/distribute-your-builds-on-the-free-netlify-hosting/public/index.html" target="_blank">Distribute your builds on the free 'www.netlify.com' hosting</a></li>
+        </ul>
+
+    </div>
+
+    <script>
+        hljs.highlightAll();
+        hljs.initLineNumbersOnLoad();
+    </script>
+
+    <!-- Since import maps are not yet supported by all browsers, it is
+        necessary to add the polyfill es-module-shims.js -->
+    <script async src="/libs/es-module-shims@1.10.0/es-module-shims.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "ejs": "/libs/ejs@3.1.10/ejs.min.js"
+            }
+        }
+    </script>
+
+    <script type="module" src="./js/index.js"></script>
+</body>
+
+</html>
