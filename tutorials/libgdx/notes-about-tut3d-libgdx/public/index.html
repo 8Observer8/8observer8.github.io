@@ -144,7 +144,7 @@ public class GameScreen extends ScreenAdapter {
     private Environment environment;
     private Model modelGround;
     private Texture textureGround;
-    private Array<ModelInstance> instances;
+    private Array&lt;ModelInstance&gt; instances;
     private ModelBatch modelBatch;
 
     @Override
@@ -183,7 +183,7 @@ public class GameScreen extends ScreenAdapter {
 
         // create and position model instances
 
-        instances = new Array<>();
+        instances = new Array&lt;&gt;();
         instances.add(new ModelInstance(modelGround, 0, -1, 0)); // 'table top' surface
 
         modelBatch = new ModelBatch();
@@ -292,15 +292,42 @@ iOS    : configuration.multisample = GLKViewDrawableMultisample._4X;
 
         <img src="./assets/images/config-desktop.png">
 
+        <br>
+        <br>
         <p>Android:</p>
 
         <img src="./assets/images/config-android.png">
 
+        <br>
+        <br>
         <p>HTML/GWT:</p>
 
         <img src="./assets/images/config-html-gwt.png">
-
         <br>
+        <br>
+
+        <p>Note. You can see what the parameters of the "setBackBufferConfig()" method mean in the <a href="https://github.com/libgdx/libgdx/blob/master/backends/gdx-backend-lwjgl3/src/com/badlogic/gdx/backends/lwjgl3/Lwjgl3ApplicationConfiguration.java#L159" target="_blank">Lwjgl3ApplicationConfiguration.java#L159</a> file in the documentation:</p>
+
+<pre><code class="language-java">   /** Sets the bit depth of the color, depth and stencil buffer as well as multi-sampling.
+     * 
+     * @param r red bits (default 8)
+     * @param g green bits (default 8)
+     * @param b blue bits (default 8)
+     * @param a alpha bits (default 8)
+     * @param depth depth bits (default 16)
+     * @param stencil stencil bits (default 0)
+     * @param samples MSAA samples (default 0) */
+    public void setBackBufferConfig (int r, int g, int b, int a, int depth, int stencil, int samples) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+        this.depth = depth;
+        this.stencil = stencil;
+        this.samples = samples;
+    }
+</code></pre>
+
         <br>
         <p><a href="https://664f92acc6f07055a11a0835--effortless-heliotrope-84d6dd.netlify.app/" target="_blank">Click to see a result in the browser</a> of the free Netlify hosting. You can rotate (LMB), zoom (MMB), and pan (RMB) the camera</p>
         <br>
