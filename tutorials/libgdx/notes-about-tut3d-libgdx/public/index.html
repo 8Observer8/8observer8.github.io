@@ -241,18 +241,71 @@ public class GameScreen extends ScreenAdapter {
 
         <h5>How to build for Desktop, Android, and Web</h5>
 
+        <p>Open CMD or Far Manager. You can open cmd in the root folder of the project by typing <span style="color: red;">cmd</span> in text text field (and press Enter):</p>
+        <img src="./assets/images/open-cmd.png">
+
+        <p>Desktop:</p>
+
         <ul>
-            <li>Install Android SDK, NDK, and JDK. I advice to install the Qt framework. It is simple to install Android tools from Qt Creator settings. Complete the following tutorial: <a href="/tutorials/qt6/download-and-install-android-sdk-ndk-and-jdk/public/index.html" target="_blank">Download and install Android SDK, NDK, JDK</a></li>
-            <li>Open CMD or Far Manager. You can open cmd in the root folder of the project by typing <span style="color: red;">cmd</span> in text text field (and press Enter):</li>
-            <img src="./assets/images/open-cmd.png">
             <li>Type the following command to run on Desktop: <span style="color: red;">gradlew lwjgl3:run</span></li>
             <li>Type the following command to create the executable ".jar" file for Desktop: <span style="color: red;">gradlew lwjgl3:run</span></li>
-            <li>Type the following command to install on real device connected with USB-cable or on running Android emulator<span style="color: red;">gradlew android:installDebug</span>. See my step by step tutorial <a href="/tutorials/deploy/activate-a-developer-mode-on-android-to-debug-with-usb-cable/public/index.html" target="_blank">Activate a developer mode on your device to debug with USB-cable</a></li>
-            <li>Type the following command to create a debug APK <span style="color: red;">gradlew android:assembleDebug</span></li>
-            <li>Type the following command to create a release APK <span style="color: red;">gradlew android:assembleRelease</span></li>
-            <li>Type the following command to create a web application: <span style="color: red;">gradlew html:dist</span>. Install <a href="https://nodejs.org/en/download/prebuilt-installer">Node.js</a>. Type in CMD <span style="color: red;">npm i -g http-server</span>. Run "http-server" inside of "tut3d/html", type: <span style="color: red;">http-server -c-1</span>, and go to the browser and type in the address field: <span style="color: red;">localhost:8080/build/dist/index.html</span>. When you changed something in your project: make a build again: <span style="color: red;">gradlew html:dist</span>, go to browser (where you see the privious scene), open a debug console of the browser: "Ctrl+Shift+J" (in Chrome and Edge) and press with RMB on the reload button and select "Empty Cache and Hard Reload". See my step by step tutorial how to deploy your application on the free 'www.netlify.com' hosting: <a href="/tutorials/deploy/distribute-your-builds-on-the-free-netlify-hosting/public/index.html" target="_blank">Distribute your builds on the free 'www.netlify.com' hosting</a></li>
         </ul>
 
+        <p>Android:</p>
+
+        <ul>
+            <li>Install Android SDK, NDK, and JDK. I advice to install the Qt framework. It is simple to install Android tools from Qt Creator settings. Complete the following tutorial: <a href="/tutorials/qt6/download-and-install-android-sdk-ndk-and-jdk/public/index.html" target="_blank">Download and install Android SDK, NDK, JDK</a></li>
+            <li>Type the following command to install on real device connected with USB-cable or on running Android emulator: <span style="color: red;">gradlew android:installDebug</span> See my step by step tutorial: <a href="/tutorials/deploy/activate-a-developer-mode-on-android-to-debug-with-usb-cable/public/index.html" target="_blank">Activate a developer mode on your device to debug with USB-cable</a></li>
+            <li>Type the following command to create a debug APK: <span style="color: red;">gradlew android:assembleDebug</span></li>
+            <li>Type the following command to create a release APK: <span style="color: red;">gradlew android:assembleRelease</span></li>
+        </ul>
+
+        <p>HTML/GWT:</p>
+
+        <ul>
+            <li>Type the following command to create a web application: <span style="color: red;">gradlew html:dist</span></li>
+            <li>Install <a href="https://nodejs.org/en/download/prebuilt-installer">Node.js</a></li>
+            <li>Type in CMD <span style="color: red;">npm i -g http-server</span> to install "http-server"</li>
+            <li>type: <span style="color: red;">http-server -c-1</span> inside of "tut3d/html" to run "http-server"</li>
+            <li>Go to the browser and type in the address field: <span style="color: red;">localhost:8080/build/dist/index.html</span> to run the application</li>
+            <li>When you changed something in your project: make a build again: <span style="color: red;">gradlew html:dist</span></li>
+            <li>Go to browser (where you see the privious scene)</li>
+            <li>Open a debug console of the browser: "Ctrl+Shift+J" (in Chrome and Edge)</li>
+            <li>Press with RMB on the reload button and select "Empty Cache and Hard Reload" to reload the page</li>
+            <li>See my step by step tutorial how to deploy your application on the free 'www.netlify.com' hosting: <a href="/tutorials/deploy/distribute-your-builds-on-the-free-netlify-hosting/public/index.html" target="_blank">Distribute your builds on the free 'www.netlify.com' hosting</a></li>
+        </ul>
+
+        <h5>How to enable anti-aliasing</h5>
+
+        <p><a href="https://stackoverflow.com/a/71354002/4159530" target="_blank">Source of the information</a></p>
+
+<pre><code>LWJGL3 : configuration.setBackBufferConfig(8, 8, 8, 8, 16, 0, 2);
+LWJGL2 : configuration.samples = 2;
+GWT    : configuration.antialiasing = true;
+Android: configuration.numSamples = 2;
+iOS    : configuration.multisample = GLKViewDrawableMultisample._4X;
+</code></pre>
+
+        <p>Add the configuration above the the files:</p>
+
+        <p>Desktop:</p>
+
+        <img src="./assets/images/config-desktop.png">
+
+        <p>Android:</p>
+
+        <img src="./assets/images/config-android.png">
+
+        <p>HTML/GWT:</p>
+
+        <img src="./assets/images/config-html-gwt.png">
+
+        <br>
+        <br>
+        <p><a href="https://664f92acc6f07055a11a0835--effortless-heliotrope-84d6dd.netlify.app/" target="_blank">Click to see a result in the browser</a> of the free Netlify hosting. You can rotate (LMB), zoom (MMB), and pan (RMB) the camera</p>
+        <br>
+        <br>
+        <br>
     </div>
 
     <script>
