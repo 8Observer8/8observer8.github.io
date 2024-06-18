@@ -36,7 +36,24 @@
 
         <p>Some notes about <a href="https://monstroussoftware.github.io/2023/11/01/Tutorial-3D-step1.html" target="_blank">Tutorial on creating a 3D game with LibGDX</a>. I use Sublime Text 4 and CMD. This is good for badget laptops.</p>
 
-        <h4>Documentation</h4>
+        <h4>Table of contents:</h4>
+
+        <ul>
+            <li><a href="#documentation">Documentation</a></li>
+            <li><a href="#step-01">Step 1 - Lift off</a></li>
+            <li><a href="#run-gdx-liftoff">How to run gdx-liftoff from the command line (CMD or Far Manager)</a></li>
+            <li><a href="#gdx-liftoff-settings">Settings for gdx-liftoff</a></li>
+            <li><a href="#source-files">Source files</a></li>
+            <li><a href="#how-to-change-keys">How to change keys</a></li>
+            <li><a href="#how-to-print-to-the-console">How to print to the console</a></li>
+            <!-- <li><a href="#angle-constraints">How to add angle constraints to rotate camera around local x axis</a></li> -->
+            <li><a href="#sideways-camera-movement">How to move the camera sideways using the A and D keys</a></li>
+            <li><a href="#how-to-build">How to build for Desktop, Android, and Web</a></li>
+            <li><a href="#how-to-enable-anti-aliasing">How to enable anti-aliasing</a></li>
+            <li><a href="https://66720a3081326067d047134c--tut3d-libgdx.netlify.app/" target="_blank">Click to see a result in the browser</a> of the free Netlify hosting. You can rotate (LMB), zoom (MMB), and pan (RMB) the camera. Use W and S to move forward and back and A and D to move left and right</li>
+        </ul>
+
+        <h4 id="documentation">Documentation</h4>
 
         <ul>
             <li>Download the <span style="color: red;">gdx-1.12.1-javadoc.jar</span> file <a href="https://repo1.maven.org/maven2/com/badlogicgames/gdx/gdx/1.12.1/" target="_blank">here</a> Unzip it with WinRAR. Place unzipped folder to some directory, for example to: <span style="color: red;">E:/_Docs</span>. Open the index.html: <span style="color: red;">E:/_Docs/gdx-1.12.1-javadoc/index.html</span> just by double click. Save opened page to bookmarks of your browser. For example, Chrome has good bookmarks</li>
@@ -44,9 +61,9 @@
             <li><a href="https://javadoc.io/doc/com.badlogicgames.gdx" target="_blank">The online documentation</a> is not available sometimes</li>
         </ul>
 
-        <h4><a href="https://monstroussoftware.github.io/2023/11/01/Tutorial-3D-step1.html" target="_blank">Step 1 - Lift off</a></h4>
+        <h4 id="step-01"><a href="https://monstroussoftware.github.io/2023/11/01/Tutorial-3D-step1.html" target="_blank">Step 1 - Lift off</a></h4>
 
-        <h5>How to run gdx-liftoff from the command line (CMD or Far Manager)</h5>
+        <h5 id="run-gdx-liftoff">How to run gdx-liftoff from the command line (CMD or Far Manager)</h5>
 
         <ul>
             <li>Download <a href="https://github.com/libgdx/gdx-liftoff/releases">gdx-liftoff-1.12.1.8</a></li>
@@ -58,7 +75,7 @@
             <li>Type the following command: <span style="color: red;">gdx-liftoff</span></li>
         </ul>
 
-        <h5>Settings for gdx-liftoff</h5>
+        <h5 id="gdx-liftoff-settings">Settings for gdx-liftoff</h5>
 
         <p>I prefer HTML/GWT instead of HTML/TeaVM. Because:</p>
 
@@ -99,6 +116,8 @@
             <li>Rename "FirstScene.java" to "GameScene.java"</li>
             <li>Add the following content to the files:</li>
         </ul>
+
+        <h5 id="source-files">Source files</h5>
 
         <p>Main.java</p>
 
@@ -239,7 +258,7 @@ public class GameScreen extends ScreenAdapter {
         </details>
         <br>
 
-        <h5>How to change keys</h5>
+        <h5 id="how-to-change-keys">How to change keys</h5>
 
         <p>You can change Keys. For example, I have moved rotated keys (A and D) to the K and L keys:</p>
 
@@ -250,7 +269,45 @@ public class GameScreen extends ScreenAdapter {
 camController.rotateLeftKey = Keys.L;
 </code></pre>
 
-        <h5>Texture</h5>
+        <h5 id="how-to-print-to-the-console">How to print to the console</h5>
+
+        <p>Import the following packages:</p>
+
+<pre><code class="language-java">import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+</code></pre>
+
+        <p>Call <span style="color: red;">Gdx.app.setLogLevel(Application.LOG_DEBUG);</span> once only but before <span style="color: red;">Gdx.app.log()</span> method. Call <span style="color: red;">Gdx.app.log("my tag", "Create was called");</span> where do you wont:</p>
+
+<pre><code class="language-java">Gdx.app.setLogLevel(Application.LOG_DEBUG);
+Gdx.app.log("my tag", "Hello, World!");
+</code></pre>
+
+        <h5 id="sideways-camera-movement">How to move the camera sideways using the A and D keys</h5>
+
+        <ul>
+            <li>Download the <a href="https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/CameraInputController.java">CameraInputController.java</a> file and place it in the same directory with the GameScreen.java and Main.java files</li>
+            <li>Delete the <span style="color: red;">import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;</span> line inside of the GameScreen.java file</li>
+            <li>Open the CameraInputController.java file, find these three lines inside of the process() method, and copy them:</li>
+<pre><code class="language-java">camera.translate(tmpV1.set(camera.direction).crs(camera.up).nor().scl(-deltaX * translateUnits));
+camera.translate(tmpV2.set(camera.up).scl(-deltaY * translateUnits));
+if (translateTarget) target.add(tmpV1).add(tmpV2);
+</code></pre>
+            <li>Got to the update() method and paste these lines for code like this:</li>
+<pre><code class="language-java">if (rotateRightPressed) {
+    // camera.rotate(camera.up, -delta * rotateAngle);
+    camera.translate(tmpV1.set(camera.direction).crs(camera.up).nor().scl(-translateUnits * delta));
+    if (translateTarget) target.add(tmpV1).add(tmpV2);
+}
+if (rotateLeftPressed) {
+    // camera.rotate(camera.up, delta * rotateAngle);
+    camera.translate(tmpV1.set(camera.direction).crs(camera.up).nor().scl(translateUnits * delta));
+    if (translateTarget) target.add(tmpV1).add(tmpV2);
+}
+</code></pre>
+        </ul>
+
+        <h5 id="texture">Texture</h5>
 
         <p>This is the "Stylized_Stone_Floor_005_basecolor.jpg" texture that should be in the "assets/textures" folder. RMB (right mouse button) click on the image below, choose "Save image as...", and save it to the "assets/textures" folder:</p>
 
@@ -258,7 +315,7 @@ camController.rotateLeftKey = Keys.L;
         <br>
         <br>
 
-        <h5>How to build for Desktop, Android, and Web</h5>
+        <h5 id="how-to-build">How to build for Desktop, Android, and Web</h5>
 
         <p>Open CMD or Far Manager. You can open cmd in the root folder of the project by typing <span style="color: red;">cmd</span> in text text field (and press Enter):</p>
         <img src="./assets/images/open-cmd.png">
@@ -294,7 +351,7 @@ camController.rotateLeftKey = Keys.L;
             <li>See my step by step tutorial how to deploy your application on the free 'www.netlify.com' hosting: <a href="/tutorials/deploy/distribute-your-builds-on-the-free-netlify-hosting/public/index.html" target="_blank">Distribute your builds on the free 'www.netlify.com' hosting</a></li>
         </ul>
 
-        <h5>How to enable anti-aliasing</h5>
+        <h5 id="how-to-enable-anti-aliasing">How to enable anti-aliasing</h5>
 
         <p><a href="https://stackoverflow.com/a/71354002/4159530" target="_blank">Source of the information</a></p>
 
@@ -348,7 +405,7 @@ iOS    : configuration.multisample = GLKViewDrawableMultisample._4X;
 </code></pre>
 
         <br>
-        <p><a href="https://664f92acc6f07055a11a0835--effortless-heliotrope-84d6dd.netlify.app/" target="_blank">Click to see a result in the browser</a> of the free Netlify hosting. You can rotate (LMB), zoom (MMB), and pan (RMB) the camera</p>
+        <p><a href="https://66720a3081326067d047134c--tut3d-libgdx.netlify.app/" target="_blank">Click to see a result in the browser</a> of the free Netlify hosting. You can rotate (LMB), zoom (MMB), and pan (RMB) the camera. Use W and S to move forward and back and A and D to move left and right</p>
         <br>
         <br>
         <br>
