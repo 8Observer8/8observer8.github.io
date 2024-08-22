@@ -7,6 +7,24 @@
     <meta name="viewport" content="initial-scale=1, width=device-width">
     <title>Deploy SDL3 app on Android</title>
     <link rel="stylesheet" href="/libs/bootstrap@5.3.3/bootstrap.min.css">
+    <link rel="stylesheet" href="/libs/highlightjs@11.9.0/styles/base16/ia-dark.min.css">
+    <script src="/libs/highlightjs@11.9.0/highlight.min.js"></script>
+    <script src="/libs/highlightjs@11.9.0/languages/cmake.min.js"></script>
+    <style>
+        .hljs-ln-line {
+            padding-left: 10px;
+        }
+
+        .hljs-ln-numbers {
+            text-align: right;
+            border-right: 1px solid #CCC;
+            margin-right: 10px;
+        }
+
+        .hljs-ln-n {
+            padding-right: 5px;
+        }
+    </style>
 </head>
 
 <body>
@@ -14,16 +32,33 @@
         <h3>Deploy SDL3 app on Android</h3>
 
         <ul>
-            <li>Android SDK, NDK, JDK must be installed</li>
-            <li>Go to <a href="https://github.com/madebr/SDL/actions/runs/10201751044">this link</a>. Download the "android" archive in the Artifacts section</li>
-            <li>Note. You can find the "INSTALL.md" guide in the "SDL3-3.1.2.aar" archive</li>
-            <li>Create a new empty folder for a new project</li>
-            <li>As the "INSTALL.md" guide said copy "SDL3-3.1.2.aar" to "your-project/libs" folder</li>
-            <li>Create a new text file in your project folder with the "build.gradle" name</li>
+            <li>Android SDK, NDK 23, JDK must be installed</li>
+            <li>Download the "sdlcross-SDL3" template example here: <a href="https://github.com/madebr/sdlcross">https://github.com/madebr/sdlcross</a> (choose the SDL3 branch and select: Code > Download ZIP). Unzip somewhere</li>
+            <li>Go to <a href="https://github.com/madebr/SDL/actions/runs/10201751044">this link</a>. Download the "android" archive in the Artifacts section. Unzip it</li>
+            <li>You will find the "SDL3-3.1.2.aar" file there</li>
+            <li>Note. You can find the "INSTALL.md" guide in the "SDL3-3.1.2.aar" archive but you don't need to study it for the current tutorial</li>
+            <li>As the "INSTALL.md" guide says to copy "SDL3-3.1.2.aar" to "sdlcross-SDL3/app/libs" folder</li>
+            <li>Open the "sdlcross-SDL3/app/build.gradle". Choose what ABI you want to use. For example, "arm64-v8a" for new devices, "armeabi-v7a" is for an old ones, "x86" and "x86_64" - for the Android emulator:</li>
+<pre><code class="language-cmake">cmake {
+    arguments '-DANDROID_STL=c++_shared', '-DWITH_IMAGE=OFF', '-DWITH_MIXER=OFF'
+    // abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+    abiFilters 'armeabi-v7a'
+}
+</code></pre>
+            <li>Open the command line inside of the "sdlcross-SDL3" template root folder</li>
+            <li>Copy and paste the following command: <span style="color: red;">gradlew assembleDebug</span></li>
+            <li>It requires 6m 52s for the first build and 7 seconds for the next builds when you change a code in the "main.c" file</li>
+            <li>The generated APK file will be here: "sdlcross-SDL3/app/build/outputs/apk/debug/app-debug.apk" - 3.8 MB</li>
+            <li>The following command is for installing APK-file that connected via USB-cable: <span style="color: red;">gradlew installDebug</span></li>
         </ul>
 
         <p>Based <a href="https://discord.com/channels/405784877305298944/1062483238695739522/1276009070566047744">on the Discord discussion</a></p>
     </div>
+
+    <script>
+        hljs.highlightAll();
+        hljs.initLineNumbersOnLoad();
+    </script>
 </body>
 
 </html>
