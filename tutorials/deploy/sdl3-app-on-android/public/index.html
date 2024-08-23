@@ -60,7 +60,7 @@
             <li>The newest Python version must be installed. I use Python 3.12. Maybe you can use 3.10 and 3.11 but 3.8 cannot be used. I now nothing about 3.9</li>
             <li>Note. You can use a few versions of Python on your computer. For example, I use Python 3.8 because <a href="https://pypi.org/project/Box2D/">PyBox2D</a> cannot work with 3.9 at this moment. I downloaded <a href="https://www.python.org/downloads/release/python-3125/">Windows embeddable package</a>. I download the "Window embeddable package", renamed python.exe to python312.exe and added it to the Path. I can use the "python312" command in the console</li>
             <li>Clone SDL source: <span style="color: red;">git clone https://github.com/libsdl-org/SDL.git</span></li>
-            <li>Note. I used this commit: <a href="https://github.com/libsdl-org/SDL/commit/8bcfdb0c925a11a8f4b47ab589e5c37458337787">8bcfdb0</a> from Aug 23, 2024. You can read how to use the specific commit <a href="https://stackoverflow.com/a/14091182/4159530">here on the Stack Overflow</a></li>
+            <li>Note. I used this commit: <a href="https://github.com/libsdl-org/SDL/commit/8bcfdb0c925a11a8f4b47ab589e5c37458337787">8bcfdb0</a> from Aug 23, 2024. You can read how to use the specific commit <a href="https://stackoverflow.com/a/14091182/4159530">here on the Stack Overflow</a> I used it: <span style="color: red;">git reset --hard 8bcfdb0</span></li>
             <li>Open the console terminal and go to the root of the SDL folder</li>
             <li>Run: <span style="color: red;">python build-scripts/build-release.py  --create android --project SDL3 --force</span></li>
             <li>The "aar" file will be generated here: SDL/dist/SDL3-3.1.2.aar'</li>
