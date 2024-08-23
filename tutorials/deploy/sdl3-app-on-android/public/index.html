@@ -52,14 +52,29 @@
             <li>The following command is for installing APK-file that connected via USB-cable: <span style="color: red;">gradlew installDebug</span></li>
         </ul>
 
+        <p>Based <a href="https://discord.com/channels/405784877305298944/1062483238695739522/1276009070566047744" target="_blank">on the Discord discussion</a></p>
+
         <p>Note. You can build "SDL3.aar" by yourself from the SDL3 sources:</p>
 
         <ul>
-            <li>Dowload SDL3 from the GitHub: <a href="https://github.com/libsdl-org/SDL">SDL3</a></li>
-            <li>Run this script by Python: "build-scripts/build-release.py" like this: <span style="color: red;">python build-scripts/build-release.py  --create android --project SDL3</span></li>
+            <li>The newest Python version must be installed. I use Python 3.12. Maybe you can use 3.10 and 3.11 but 3.8 cannot be used. I now nothing about 3.9</li>
+            <li>Note. You can use a few versions of Python on your computer. For example, I use Python 3.8 because <a href="https://pypi.org/project/Box2D/">PyBox2D</a> cannot work with 3.9 at this moment. I downloaded <a href="https://www.python.org/downloads/release/python-3125/">Windows embeddable package</a>. I download the "Window embeddable package", renamed python.exe to python312.exe and added it to the Path. I can use the "python312" command in the console</li>
+            <li>Clone SDL source: <span style="color: red;">git clone https://github.com/libsdl-org/SDL.git</span></li>
+            <li>Note. I used this commit: 8bcfdb0 from Aug 23, 2024. You can read how to use the specific commit [here on the Stack Overflow](https://stackoverflow.com/a/14091182/4159530)</li>
+            <li>Open the console terminal and go to the root of the SDL folder</li>
+            <li>Run: <span style="color: red;">python build-scripts/build-release.py  --create android --project SDL3 --force</span></li>
+            <li>The "aar" file will be generated here: SDL/dist/SDL3-3.1.2.aar'</li>
+            <li>Note. You can disable "fresh" in the "build-scripts/build-release.py" by comment it for faster turn-a-round, and forcing a build:</li>
+<pre><code>cmake_args = [
+    "cmake",
+    "-S", str(self.root),
+    "-B", str(build_dir),
+    #"--fresh",
+    f'''-DCMAKE_C_FLAGS="-ffile-prefix-map={self.root}=/src/{self.
+</code></pre>
         </ul>
 
-        <p>Based <a href="https://discord.com/channels/405784877305298944/1062483238695739522/1276009070566047744" target="_blank">on the Discord discussion</a></p>
+        <p>Based <a href="https://discord.com/channels/405784877305298944/1062483238695739522/1276232633637928996" target="_blank">on the Discord discussion</a></p>
     </div>
 
     <script>
