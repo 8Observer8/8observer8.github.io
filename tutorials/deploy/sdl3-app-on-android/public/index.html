@@ -64,7 +64,7 @@
             <li>Open the console terminal</li>
             <li>Clone SDL source: <span style="color: red;">git clone https://github.com/libsdl-org/SDL.git</span></li>
             <li>Note. I used this commit: <a href="https://github.com/libsdl-org/SDL/commit/8bcfdb0c925a11a8f4b47ab589e5c37458337787">8bcfdb0</a> from Aug 23, 2024. You can read how to use the specific commit <a href="https://stackoverflow.com/a/14091182/4159530">here on the Stack Overflow</a> I used it: <span style="color: red;">git reset --hard 8bcfdb0</span></li>
-            <li>Note. You can disable the ABI's that you don't need in the "build-release.py". It allows to build in 4m 25s. SDL3-3.1.2.aar will have 3.30 MB:</li>
+            <li>Note. You can disable the ABI's that you don't need in the "build-release.py". It allows to build in 4m 25s. SDL3-3.1.2.aar will have 3.30 MB (<a href="/libs/sdl3/android/armeabi-v7a/SDL3-3.1.2.aar">download</a>):</li>
 <pre><code class="language-cmake">
 ANDROID_AVAILABLE_ABIS = [
     "armeabi-v7a"
@@ -75,7 +75,7 @@ ANDROID_AVAILABLE_ABIS = [
 </code></pre>
             <li>Go to the root of the SDL folder: <span style="color: red;">cd SDL</span></li>
             <li>Run: <span style="color: red;">python build-scripts/build-release.py  --create android --project SDL3 --force</span></li>
-            <li>The "aar" file will be generated here: SDL/dist/SDL3-3.1.2.aar'. The size of it is 11.7 MB</li>
+            <li>The "aar" file will be generated here: SDL/dist/SDL3-3.1.2.aar'. The size of it is 11.7 MB (<a href="/libs/sdl3/android/all-abis/SDL3-3.1.2.aar">download</a>)</li>
             <li>Note. You can disable "fresh" in the "build-scripts/build-release.py" by comment it for faster turn-a-round, and forcing a build:</li>
 <pre><code>cmake_args = [
     "cmake",
