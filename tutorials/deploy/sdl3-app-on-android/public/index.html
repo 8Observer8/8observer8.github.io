@@ -56,6 +56,21 @@
             <li>It requires 6m 52s for the first build and 7 seconds for the next builds when you change a code in the "main.c" file</li>
             <li>The generated APK file will be here: "sdlcross-SDL3/app/build/outputs/apk/debug/app-debug.apk" - 3.8 MB</li>
             <li>The following command is for installing APK-file that connected via USB-cable: <span style="color: red;">gradlew installDebug</span></li>
+            <li>Important! If you changed a project name inside of the "CMakeLists.txt" here:</li>
+<pre><code class="language-cmake"># Declare the project
+project(sdlcross)
+</code></pre>
+            <li>then you should write the same name here in the .java file that is located here "app\src\main\java\com\example\sdlcross" inside of the "getLibraries()" method:</li>
+<pre><code class="language-java">package com.example.sdlcross;
+
+import org.libsdl.app.SDLActivity;
+
+public class MyActivity extends SDLActivity {
+    protected String[] getLibraries() {
+        return new String[] { "my_project" };
+    }
+}
+</code></pre>
         </ul>
 
         <p>Based <a href="https://discord.com/channels/405784877305298944/1062483238695739522/1276009070566047744" target="_blank">on the Discord discussion</a></p>
