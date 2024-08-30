@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>Setting up SDL3 for Windows using CMake and MinGW-w64</title>
+    <link rel="stylesheet" href="/libs/bootstrap@5.3.3/bootstrap.min.css">
+    <link rel="stylesheet" href="/libs/highlightjs@11.9.0/styles/base16/ia-dark.min.css">
+    <script src="/libs/highlightjs@11.9.0/highlight.min.js"></script>
+    <script src="/libs/highlightjs@11.9.0/languages/bash.min.js"></script>
+    <script src="/libs/highlightjs@11.9.0/languages/cmake.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <br>
+        <a href="/index.html">Main page</a>
+        <br>
+        <br>
+
+        <h4>Table of contents</h4>
+
+        <ul>
+            <li><a href="#setting-up-for-windows">Setting up SDL3 for Windows using CMake and MinGW-w64</a></li>
+            <li><a href="#hello-world-to-exe">Compilation a very simple "Hello, World" example to EXE</a></li>
+            <li><a href="#the-separated-cpp-file">Creating a window using SDL3 and writing code in the separated "main.cpp" file</a></li>
+            <li><a href="#qt-creator-ide">Qt Creator IDE</a></li>
+            <li><a href="#creating-an-opengl-window-in-qt-creator">Creating an OpenGL window in Qt Creator</a></li>
+            <li><a href="#embeding-text-files-to-exe">Embeding text files to EXE</a></li>
+        </ul>
+
+        <h4 id="setting-up-for-windows">Setting up SDL3 for Windows using CMake and MinGW-w64</h4>
+
+        <ul>
+            <li>Download and unzip MinGW-w64: <a href="https://winlibs.com/">https://winlibs.com/</a> I have downloaded <a href="https://github.com/brechtsanders/winlibs_mingw/releases/download/11.2.0-10.0.0-ucrt-r1/winlibs-x86_64-posix-seh-gcc-11.2.0-mingw-w64ucrt-10.0.0-r1.zip">GCC 11.2.0 + MinGW-w64 10.0.0 (UCRT) - release 1, Win64</a>. This archive contains the "mingw64" folder. Unzip the "mingw64" folder on the C drive (or on the another drive). It requires 672 MB on your hard disk</li>
+            <li>The "mingw64" folder contains the "bin" folder. Add the "C:\mingw64\bin" path to the Path environment variable</li>
+            <li>Download and install CMake: <a href="https://cmake.org/download/">https://cmake.org/download/</a> Download "Windows x64 Installer" and install it</li>
+            <li>Check that "mingw32-make" and "cmake" is available from the console:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake --version
+mingw32-make --version</code></pre>
+            <li>I use CMake v3.27.7</li>
+            <li>Download SDL3 sources from <a href="https://github.com/libsdl-org/SDL" target="_blank">GitHub</a> (Code > Download ZIP)</li>
+            <li>Unzip the downloaded archive. Open the console terminal inside the folder</li>
+            <li>Copy and paste the following command to the console for the configuration. Replace the installation path to your path if you need:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake -G "MinGW Makefiles" --fresh -S . -B dist -DCMAKE_INSTALL_PREFIX=E:\libs\sdl3-desktop-prefix</code></pre>
+            <li>It requires 3 minutes 20 seconds</li>
+            <li>Note. If you want the pure OpenGL use this command:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake -G "MinGW Makefiles" --fresh -S . -B dist -DCMAKE_INSTALL_PREFIX=E:\libs\sdl3-desktop-prefix -DSDL_AUDIO=OFF -DSDL_CAMERA=OFF -DSDL_HAPTIC=OFF -DSDL_HIDAPI=OFF -DSDL_POWER=OFF -DSDL_SENSOR=OFF -DSDL_DIALOG=OFF</code></pre>
+            <li>On my laptop, the second command above takes 2 minutes and 55 seconds to complete</li>
+            <li>Copy and paste the build command:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake --build dist -j4</code></pre>
+            <li>Time: 1m 20s for the both configurations above</li>
+            <li>Copy and paste the installation command:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake --install dist</code></pre>
+            <li>You can find the generated DLL inside of the installation folder that you write after "-DCMAKE_INSTALL_PREFIX="</li>
+            <li>Size of SDL3.dll for the first configuration: 11.6 MB or 11,924 KB</li>
+            <li>Size of SDL3.dll for the second configuration: 10.1 MB or 10,381 KB</li>
+            <li>The size can be reduced using UPX to 2.75 MB or 2,818 KB</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">upx.exe --best SDL3.dll</code></pre>
+        </ul>
+
+        <h4 id="hello-world-to-exe">Compilation a very simple "Hello, World" example to EXE</h4>
+
+        <ul>
+            <li>Create a folder for a project. You can use this command in the console:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">mkdir my-project</code></pre>
+            <li>Move to the created folder:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cd my-project</code></pre>
+            <li>Create the "CMakeLists.txt" file in the project folder with the content below:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake_minimum_required(VERSION 3.20)
+project(my_project)
+find_package(SDL3)
+file(WRITE main.cpp "#include &lt;SDL3/SDL.h&gt;\nint main() {SDL_Init(0);SDL_Quit();return 0;}")
+add_executable(app main.cpp)
+target_link_libraries(app PRIVATE SDL3::SDL3)
+
+# This code copies the "SDL3.dll" file to the build directory
+add_custom_command(TARGET app POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    $&lt;TARGET_RUNTIME_DLLS:app&gt; $&lt;TARGET_FILE_DIR:app&gt;
+)</code></pre>
+            <li>Create a folder for building the project:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">mkdir dist\win</code></pre>
+            <li>Move to the "dist" folder:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cd dist</code></pre>
+            <li>Copy and paste the configuration command:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake -G "MinGW Makefiles" --fresh -S .. -B ..\dist\win -DSDL3_DIR=E:\libs\sdl3-desktop-prefix\lib\cmake\SDL3</code></pre>
+            <li>Move to the "win" folder:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cd win</code></pre>
+            <li>Type the build command:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">mingw32-make</code></pre>
+            <li>The "app.exe" file was created. Run it:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">app</code></pre>
+            <li>Note. You can embed the following libraries to the EXE (but SDL3.dll and libwinpthread-1.dll must be distributed with the EXE):</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">target_link_options(${EXECUTABLE_NAME} PRIVATE -static-libgcc -static-libstdc++)</code></pre>
+            <li>This project doesn't show anything. Let's create a new project with a window below</li>
+        </ul>
+
+        <h4 id="the-separated-cpp-file">Creating a window using SDL3 and writing code in the separated "main.cpp" file</h4>
+
+        <p>The previous example creates "main.cpp" inside of the "CMakeLists.txt" using "file(WRITE... )":</p>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cmake">file(WRITE main.cpp "#include &lt;SDL3/SDL.h&gt;\nint main() {SDL_Init(0);SDL_Quit();return 0;}")</code></pre>
+        <p>Let's create our "main.cpp" and a window.</p>
+        <ul>
+            <li>Create a folder for a project. You can use this command in the console:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">mkdir create-a-window</code></pre>
+            <li>Move to the created folder:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cd create-a-window</code></pre>
+            <li>Create the "CMakeLists.txt" file in the created folder with the content below:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake_minimum_required(VERSION 3.20)
+
+project(create_a_window)
+add_executable(app main.cpp)
+
+# This code copies the "SDL3.dll" file to the build directory
+add_custom_command(TARGET app POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    $&lt;TARGET_RUNTIME_DLLS:app&gt; $&lt;TARGET_FILE_DIR:app&gt;
+)
+
+find_package(SDL3)
+target_link_libraries(app PRIVATE SDL3::SDL3)
+target_compile_definitions(app PRIVATE SDL_MAIN_USE_CALLBACKS)</code></pre>
+            <li>Create the "main.cpp" file in the created folder with the content below:</li>
+            <details>
+                <summary>main.cpp (Click here to view the full content)</summary>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cpp">#include $&lt;SDL3/SDL.h&gt;
+#include $&lt;SDL3/SDL_main.h&gt;
+
+struct AppContext
+{
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    SDL_AppResult app_quit = SDL_APP_CONTINUE;
+};
+
+SDL_AppResult SDL_Fail()
+{
+    SDL_LogError(SDL_LOG_CATEGORY_CUSTOM, "Error %s", SDL_GetError());
+    return SDL_APP_FAILURE;
+}
+
+SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
+{
+    if (SDL_Init(SDL_INIT_VIDEO))
+    {
+        return SDL_Fail();
+    }
+
+    SDL_Window *window = SDL_CreateWindow("Window", 352, 430,
+        SDL_WINDOW_RESIZABLE);
+    if (!window)
+    {
+        return SDL_Fail();
+    }
+
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
+    if (!renderer)
+    {
+        return SDL_Fail();
+    }
+
+    SDL_ShowWindow(window);
+
+    *appstate = new AppContext {
+        window,
+        renderer,
+    };
+
+    return SDL_APP_CONTINUE;
+}
+
+SDL_AppResult SDL_AppEvent(void *appstate, const SDL_Event *event)
+{
+    auto *app = (AppContext *)appstate;
+
+    if (event->type == SDL_EVENT_QUIT)
+    {
+        app->app_quit = SDL_APP_SUCCESS;
+    }
+
+    return SDL_APP_CONTINUE;
+}
+
+SDL_AppResult SDL_AppIterate(void *appstate)
+{
+    auto *app = (AppContext *)appstate;
+
+    SDL_SetRenderDrawColor(app->renderer, 128, 255, 128, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(app->renderer);
+    SDL_RenderPresent(app->renderer);
+
+    return app->app_quit;
+}
+
+void SDL_AppQuit(void *appstate)
+{
+    auto *app = (AppContext *)appstate;
+    if (app)
+    {
+        SDL_DestroyRenderer(app->renderer);
+        SDL_DestroyWindow(app->window);
+        delete app;
+    }
+    SDL_Quit();
+}</code></pre>
+            </details>
+            <li>Create a folder for building the project:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">mkdir dist\win</code></pre>
+            <li>Move to the "dist" folder:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cd dist</code></pre>
+            <li>Copy and paste the configuration command:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake -G "MinGW Makefiles" --fresh -S .. -B ..\dist\win -DSDL3_DIR=E:\libs\sdl3-desktop-prefix\lib\cmake\SDL3</code></pre>
+            <li>Move to the "win" folder:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cd win</code></pre>
+            <li>Type the build command:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">mingw32-make</code></pre>
+            <li>The "app.exe" file was created. Run it:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">app</code></pre>
+            <li>This project doesn't show anything. Let's create a new project with a window below</li>
+        </ul>
+
+        <h4 id="qt-creator-ide">Qt Creator IDE</h4>
+
+        <p>You can open and the privious project in the Qt Creator</p>
+
+        <ul>
+            <li>Press in the Qt Creator menu: "File" > "Open File or Project..."</li>
+            <li>Select "CMakeLists.txt" and press "Open"</li>
+            <li>Press "Cofigure project" in the new openned window</li>
+            <li>Click "Projects" on the left panel</li>
+            <li>Add a new key to the "Initial Configuration". Press "ADD" > "Directory":</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-text">Key: SDL3_DIR
+Value: E:\libs\sdl3-desktop-prefix\lib\cmake\SDL3</code></pre>
+            <li>Press the "Re-configure with Initial Parameters" button below. Press "Yes"</li>
+            <li>Return to the "Edit" tab on the left panel</li>
+            <li>Run the project by pressing on "Ctrl+R" or click a green triangle at the bottom left</li>
+            <li>You can set breakpoint and run your programs step by step for debugging</li>
+        </ul>
+
+        <h4 id="creating-an-opengl-window-in-qt-creator">Creating an OpenGL window in Qt Creator</h4>
+
+        <ul>
+            <li>Create the empty "opengl-window" folder and "CMakeLists.txt" inside it</li>
+            <li>Create the empty "main.cpp" inside of the empty "opengl-window" folder</li>
+            <li>Press in the Qt Creator menu: "File" > "Open File or Project..."</li>
+            <li>Select "CMakeLists.txt" and press "Open"</li>
+            <li>Press "Cofigure project" in the new openned window</li>
+            <li>Double click on the "CMakeLists.txt" file inside of Qt Creator</li>
+            <li>Write the following command to rename the project:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cmake">project("opengl_window")</code></pre>
+            <li>Press Ctrl+S. You can see that project was renamed in Qt Creator to "opengl_window"</li>
+            <li>Add the following content to the "CMakeLists.txt" file:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cmake">cmake_minimum_required(VERSION 3.20)
+
+project(opengl_window)
+add_executable(app main.cpp)
+
+target_sources(app
+PRIVATE 
+    src/main.cpp
+    src/math_helper.cpp
+    src/shader_program.cpp
+    E:/libs/glad-2.0.6/src/glad.c
+)
+
+# This code copies the "SDL3.dll" file to the build directory
+add_custom_command(TARGET app POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    $&lt;TARGET_RUNTIME_DLLS:app&gt; $&lt;TARGET_FILE_DIR:app&gt;
+)
+
+find_package(SDL3)
+target_link_libraries(app PRIVATE SDL3::SDL3)
+target_compile_definitions(app PRIVATE SDL_MAIN_USE_CALLBACKS)
+</code></pre>
+            <li>Click "Projects" on the left panel</li>
+            <li>Add a new key to the "Initial Configuration". Press "ADD" > "Directory":</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-text">Key: SDL3_DIR
+Value: E:\libs\sdl3-desktop-prefix\lib\cmake\SDL3</code></pre>
+            <li>Press the "Re-configure with Initial Parameters" button below. Press "Yes"</li>
+            <li>Return to the "Edit" tab on the left panel</li>
+            <li>Copy and paste the following content to the "main.cpp" file</li>
+            <details>
+                <summary>main.cpp (Click here to view the full content)</summary>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cpp">#include $&lt;SDL3/SDL.h&gt;
+#include $&lt;SDL3/SDL_main.h&gt;
+
+struct AppContext
+{
+    SDL_Window *window;
+    SDL_GLContext glcontext;
+    SDL_AppResult app_quit = SDL_APP_CONTINUE;
+};
+
+SDL_AppResult SDL_Fail()
+{
+    SDL_LogError(SDL_LOG_CATEGORY_CUSTOM, "Error %s", SDL_GetError());
+    return SDL_APP_FAILURE;
+}
+
+SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
+{
+    // Init the library, here we make a window so we
+    // only need the Video capabilities
+    if (SDL_Init(SDL_INIT_VIDEO))
+    {
+        return SDL_Fail();
+    }
+
+    // Create a window
+    SDL_Window *window = SDL_CreateWindow("OpenGL Window", 350, 350,
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    if (!window)
+    {
+        return SDL_Fail();
+    }
+
+    SDL_GLContext glcontext = SDL_GL_CreateContext(window);
+    if (!glcontext)
+    {
+        return SDL_Fail();
+    }
+
+    SDL_ShowWindow(window);
+
+    // Set up the application data
+    *appstate = new AppContext {
+        window,
+        glcontext,
+    };
+
+    return SDL_APP_CONTINUE;
+}
+
+SDL_AppResult SDL_AppEvent(void *appstate, const SDL_Event *event)
+{
+    auto *app = (AppContext *)appstate;
+
+    switch (event->type)
+    {
+        case SDL_EVENT_QUIT:
+        {
+            app->app_quit = SDL_APP_SUCCESS;
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    return SDL_APP_CONTINUE;
+}
+
+SDL_AppResult SDL_AppIterate(void *appstate)
+{
+    auto *app = (AppContext *)appstate;
+
+    SDL_GL_SwapWindow(app->window);
+
+    return app->app_quit;
+}
+
+void SDL_AppQuit(void *appstate)
+{
+    auto *app = (AppContext *)appstate;
+    if (app)
+    {
+        SDL_GL_DestroyContext(app->glcontext);
+        SDL_DestroyWindow(app->window);
+        delete app;
+    }
+
+    SDL_Quit();
+}</code></pre>
+            </details>
+            <li>Run the project by pressing on "Ctrl+R" or click a green triangle at the bottom left. You will see a window with a black canvas. Let's set the canvas to green</li>
+            <li>Add the glClearColor() and glClear() function calls in the SDL_AppIterate():</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cpp">SDL_AppResult SDL_AppIterate(void *appstate)
+{
+    auto *app = (AppContext *)appstate;
+
+    glClearColor(0.f, 0.5f, 0.f, 1.f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    SDL_GL_SwapWindow(app->window);
+
+    return app->app_quit;
+}</code></pre>
+            <li>If you run the current project you will see the following errors</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-text">error: 'glClearColor' was not declared in this scope
+error: 'GL_COLOR_BUFFER_BIT' was not declared in this scope
+error: 'glClear' was not declared in this scope</code></pre>
+            <li>Let's setup GLAD to solve these errors. Google "glad online opengl generator". You will find this link: <a href="https://glad.dav1d.de/">https://glad.dav1d.de/</a></li>
+            <li>In the "API > gl" select the OpenGL API version what do you want. I prefer to use "Version 2.1" because it is very similar to OpenGL ES 2.0 that is enough for me</li>
+            <li>Scroll to the bottom of the page and click on the "Generate" button</li>
+            <li>Click on the "glad.zip" archive. Unzip in somewhere. For example: "E:\libs\glad-2.0.6"</li>
+            <li>Add the following commands to the "CMakeLists.txt" file to setup GLAD in the project:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cmake">target_include_directories(app PRIVATE E:/libs/glad-2.0.6/include)
+
+target_sources(app
+PRIVATE
+    main.cpp
+    E:/libs/glad-2.0.6/src/glad.c
+)</code></pre>
+            <li>Add the following line of the code to the "main.cpp" file to include glad to the project:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cpp">#include &lt;glad/glad.h&gt;</code></pre>
+            <li>The gladLoadGL() function must be called after SDL_GL_CreateContext()</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cpp">if (!gladLoadGL())
+{
+    std::cout << "Failed to load OpenGL functions" << std::endl;
+    return SDL_APP_FAILURE;
+}</code></pre>
+            <li>Add "iostream" to print to the console:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cpp">#include &lt;iostream&gt;</code></pre>
+            <li>Run the project by pressing on "Ctrl+R" or click a green triangle at the bottom left</li>
+            <li>You will see a window with a black canvas</li>
+            <li>The final code for this example:</li>
+            <details>
+                <summary>CMakeLists.txt (Click here to view the full content)</summary>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cpp">cmake_minimum_required(VERSION 3.20)
+
+project(opengl_window)
+add_executable(app)
+
+target_include_directories(app PRIVATE E:/libs/glad-2.0.6/include)
+
+target_sources(app
+PRIVATE
+    main.cpp
+    E:/libs/glad-2.0.6/src/glad.c
+)
+
+# This code copies the "SDL3.dll" file to the build directory
+add_custom_command(TARGET app POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    $&lt;TARGET_RUNTIME_DLLS:app&gt; $&lt;TARGET_FILE_DIR:app&gt;
+)
+
+find_package(SDL3)
+target_link_libraries(app PRIVATE SDL3::SDL3)
+target_compile_definitions(app PRIVATE SDL_MAIN_USE_CALLBACKS)</code></pre>
+            </details>
+            <details>
+                <summary>main.cpp (Click here to view the full content)</summary>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cpp">#include $&lt;SDL3/SDL.h&gt;
+#include $&lt;SDL3/SDL_main.h&gt;
+
+#include $&lt;glad/glad.h&gt;
+#include $&lt;iostream&gt;
+
+struct AppContext
+{
+    SDL_Window *window;
+    SDL_GLContext glcontext;
+    SDL_AppResult app_quit = SDL_APP_CONTINUE;
+};
+
+SDL_AppResult SDL_Fail()
+{
+    SDL_LogError(SDL_LOG_CATEGORY_CUSTOM, "Error %s", SDL_GetError());
+    return SDL_APP_FAILURE;
+}
+
+SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
+{
+    // Init the library, here we make a window so we
+    // only need the Video capabilities
+    if (SDL_Init(SDL_INIT_VIDEO))
+    {
+        return SDL_Fail();
+    }
+
+    // Create a window
+    SDL_Window *window = SDL_CreateWindow("OpenGL Window", 350, 350,
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    if (!window)
+    {
+        return SDL_Fail();
+    }
+
+    SDL_GLContext glcontext = SDL_GL_CreateContext(window);
+    if (!glcontext)
+    {
+        return SDL_Fail();
+    }
+
+    if (!gladLoadGL())
+    {
+        std::cout << "Failed to load OpenGL functions" << std::endl;
+        return SDL_APP_FAILURE;
+    }
+
+    SDL_ShowWindow(window);
+
+    // Set up the application data
+    *appstate = new AppContext {
+        window,
+        glcontext,
+    };
+
+    return SDL_APP_CONTINUE;
+}
+
+SDL_AppResult SDL_AppEvent(void *appstate, const SDL_Event *event)
+{
+    auto *app = (AppContext *)appstate;
+
+    switch (event->type)
+    {
+        case SDL_EVENT_QUIT:
+        {
+            app->app_quit = SDL_APP_SUCCESS;
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    return SDL_APP_CONTINUE;
+}
+
+SDL_AppResult SDL_AppIterate(void *appstate)
+{
+    auto *app = (AppContext *)appstate;
+
+    glClearColor(0.f, 0.5f, 0.f, 1.f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    SDL_GL_SwapWindow(app->window);
+
+    return app->app_quit;
+}
+
+void SDL_AppQuit(void *appstate)
+{
+    auto *app = (AppContext *)appstate;
+    if (app)
+    {
+        SDL_GL_DestroyContext(app->glcontext);
+        SDL_DestroyWindow(app->window);
+        delete app;
+    }
+
+    SDL_Quit();
+}</code></pre>
+            </details>
+        </ul>
+
+        <h4 id="embeding-text-files-to-exe">Embeding text files to EXE</h4>
+
+        <p>Let's create a text file and embed it in the EXE. We'll print the contents of the text file to the console</p>
+
+        <ul>
+            <li>Create a folder for a project. You can use this command in the console:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">mkdir embeded-text-file</code></pre>
+            <li>Move to the created folder:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cd embeded-text-file</code></pre>
+            <li>Create the "assets" folder and the "hello-world.txt" file inside it with the following text:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-text">Hello, World!</code></pre>
+            <li>Create the "CMakeLists.txt" file in the project folder with the content below:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake_minimum_required(VERSION 3.20)
+
+project(embeded_text_file)
+add_executable(app)
+
+target_sources(app
+PRIVATE
+    src/main.cpp
+)
+
+# C++ 20 requires for the "battery-embed" library
+target_compile_features(app PUBLIC cxx_std_20)
+
+# This code will install the "battery-embed" library
+include(FetchContent)
+FetchContent_Declare(
+  battery-embed
+  GIT_REPOSITORY https://github.com/batterycenter/embed.git
+  GIT_TAG        main
+)
+FetchContent_MakeAvailable(battery-embed)
+
+# Files to embed
+b_embed(app assets/hello-world.txt)</code></pre>
+            <li>You should comments above</li>
+            <li>Create the "src" folder and create the "main.cpp" file in the "src" folder with the contect below:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">#include $&lt;iostream&gt;
+#include $&lt;battery/embed.hpp&gt;
+
+int main()
+{
+    std::string text = b::embed<"assets/hello-world.txt">();
+    std::cout << text << std::endl;
+    return 0;
+}</code></pre>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cpp"></code></pre>
+            <li>Create a folder for building the project:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">mkdir dist\win</code></pre>
+            <li>Move to the "dist" folder:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cd dist</code></pre>
+            <li>Copy and paste the configuration command:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake -G "MinGW Makefiles" --fresh -S .. -B ..\dist\win</code></pre>
+            <li>Move to the "win" folder:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cd win</code></pre>
+            <li>Type the build command:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">mingw32-make</code></pre>
+            <li>The "app.exe" file was created. Run it the application:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">app</code></pre>
+            <li>You will see the "Hello, World!" text in the console</li>
+        </ul>
+
+        <p>In the future:</p>
+
+        <h4>Embeding textures to EXE</h4>
+        <ul>
+            <li></li>
+        </ul>
+
+        <h4>Embeding audio files to EXE and play music and sounds with OpenAL</h4>
+        <ul>
+            <li></li>
+        </ul>
+
+        <h4>Setting up the ImGUI library</h4>
+        <ul>
+            <li></li>
+        </ul>
+
+        <h4>Setting up the header only GLM library</h4>
+        <ul>
+            <li></li>
+        </ul>
+
+        <h4>Setting up Box2D using CMakeLists.txt</h4>
+        <ul>
+            <li></li>
+        </ul>
+
+        <h4>Setting up Bullet Physics using CMakeLists.txt</h4>
+        <ul>
+            <li></li>
+        </ul>
+
+    </div>
+
+    <script>
+        hljs.highlightAll();
+    </script>
+</body>
+
+</html>
