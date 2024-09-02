@@ -233,7 +233,7 @@ void SDL_AppQuit(void *appstate)
                 <li>Using WIN32:</li>
 <pre class="hljs" style="white-space: pre-wrap;"><code class="language-cmake">add_executable(app WIN32)</code></pre>
                 <li>Using the "-mwindows" flag:</li>
-<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cmake">target_link_options(yourgame PRIVATE "-mwindows")</code></pre>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cmake">target_link_options(app PRIVATE "-mwindows")</code></pre>
             </ul>
             <li>The first way works with MinGW and MSVC. You can download MSVC without Visual Studio using <a href="https://gist.github.com/mmozeiko/7f3162ec2988e81e56d5c4e22cde9977/">this gist</a>. It is around ~1GB for the compiler toolchain and the Windows SDK</li>
         </ul>        
