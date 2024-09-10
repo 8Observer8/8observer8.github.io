@@ -30,6 +30,7 @@
             <li><a href="#qt-creator-ide">Qt Creator IDE</a></li>
             <li><a href="#creating-an-opengl-window-in-qt-creator">Creating an OpenGL window in Qt Creator</a></li>
             <li><a href="#embeding-text-files-to-exe">Embeding text files to EXE</a></li>
+            <li><a href="#embeding-textures-to-exe">Embeding textures to EXE using the "embed" library</a></li>
             <li><a href="#building-imgui-statically">Building ImGUI statically and setting up it to the CMake project</a></li>
         </ul>
 
@@ -964,12 +965,23 @@ void SDL_AppQuit(void *appstate)
 <pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">app</code></pre>
         </ul>
 
-        <p>In the future:</p>
+        <h4 id="embeding-textures-to-exe">Embeding textures to EXE using the "embed" library</h4>
 
-        <h4>Embeding textures to EXE</h4>
+        <p>This example uses the <a href="https://github.com/batterycenter/embed">embed</a> library. You don't need to install this library. It will be installed automatically by "CMakeLists.txt"</p>
+
         <ul>
-            <li></li>
+            <li>Download the <a href="https://github.com/8Observer8/load-a-texture-opengl21-sdl3-cpp">load-a-texture-opengl21-sdl3-cpp</a> example and unzip it</li>
+            <li>Go to the example folder in the console and type the commands:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">mkdir dist\win
+cd dist
+cmake -G "MinGW Makefiles" --fresh -S .. -B ..\dist\win -DSDL3_DIR=E:\libs\sdl3-desktop-prefix\lib\cmake\SDL3
+cd win
+mingw32-make
+app
+</code></pre>
         </ul>
+
+        <p>In the future:</p>
 
         <h4>Embeding audio files to EXE and play music and sounds with OpenAL</h4>
         <ul>
