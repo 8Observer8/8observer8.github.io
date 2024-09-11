@@ -989,30 +989,10 @@ void SDL_AppQuit(void *appstate)
             <li><a href="https://www.dropbox.com/scl/fi/od8m50cfb6qtgddimtpc3/imgui-and-triangle-opengl21-sdl3-cpp-exe.zip?rlkey=6obwm7huea9frmr42mc3g17a0&st=ao2c31kv&dl=1">EXE for Windows 10, 64-bit</a> - 2.9 MB</li>
         </ul>
 
-        <p>In the future:</p>
-
-        <h4>Setting up the header only GLM library</h4>
-
-        <ul>
-            <li></li>
-        </ul>
-
-        <h4>Embeding audio files to EXE and play music and sounds with OpenAL</h4>
-
-        <ul>
-            <li>
-                <details>
-                    <summary>play-music-openal-opengl21-sdl3-cpp</summary>
-                    <ul>
-                        <li><a href="https://www.dropbox.com/scl/fi/jbndka3q9p5sekkzvd7rg/play-music-openal-opengl21-sdl3-cpp-exe.zip?rlkey=108ta5xj5mkf0x3clyapxu7xy&st=y7277j6k&raw=1">EXE for Windows 10, 64-bit</a> - 8.21 MB, unzipped - 11.6 MB</li>
-                    </ul>
-                </details>
-            </li>
-        </ul>
-
         <h4 id="setting-up-box2d">Setting up Box2D</h4>
 
         <ul>
+            <li><a href="#setting-up-for-windows" target="_blank">Setting up SDL3 for Windows using CMake and MinGW-w64</a></li>
             <li>Download <a href="https://github.com/erincatto/box2d/releases/tag/v2.4.2" target="_blank">the Box2D 2.4.2 release</a> and unzip it</li>
             <li>Open the console in the unzipped folder. Copy and paste the following configuration command:</li>
 <pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake -G "MinGW Makefiles" --fresh -S . -B dist -DCMAKE_INSTALL_PREFIX=E:\libs\box2d-2.4.2-prefix -DBOX2D_BUILD_TESTBED=OFF -DBOX2D_BUILD_UNIT_TESTS=OFF</code></pre>
@@ -1264,6 +1244,27 @@ void SDL_AppQuit(void *appstate)
             </ul>
             <li><a href="https://www.dropbox.com/scl/fi/t9dgohhqwe7f26n0u3ko4/print-gravity-box2d-opengles20-sdl3-cpp-exe.zip?rlkey=jg0mjrz3ujro10abapd9f9jty&st=zfqpazin&raw=1">EXE for Windows 10, 64-bit</a> - 2.66 MB, unzipped - 4.68 MB</li>
             <li><a href="https://www.dropbox.com/scl/fi/z0ge1ovcveugc1ct4995f/print-gravity-box2d-opengles20-sdl3-cpp.png?rlkey=suyqvtpgxzgikfu2nkj68vbab&st=kd00fc3k&raw=1" target="_blank">Screenshot</a></li>
+        </ul>
+
+        <p>In the future:</p>
+
+        <h4>Setting up the header only GLM library</h4>
+
+        <ul>
+            <li></li>
+        </ul>
+
+        <h4>Embeding audio files to EXE and play music and sounds with OpenAL</h4>
+
+        <ul>
+            <li>
+                <details>
+                    <summary>play-music-openal-opengl21-sdl3-cpp</summary>
+                    <ul>
+                        <li><a href="https://www.dropbox.com/scl/fi/jbndka3q9p5sekkzvd7rg/play-music-openal-opengl21-sdl3-cpp-exe.zip?rlkey=108ta5xj5mkf0x3clyapxu7xy&st=y7277j6k&raw=1">EXE for Windows 10, 64-bit</a> - 8.21 MB, unzipped - 11.6 MB</li>
+                    </ul>
+                </details>
+            </li>
         </ul>
 
         <h4>Setting up Bullet Physics</h4>
