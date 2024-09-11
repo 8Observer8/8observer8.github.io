@@ -32,6 +32,7 @@
             <li><a href="#embeding-text-files-to-exe">Embeding text files to EXE</a></li>
             <li><a href="#embeding-textures-to-exe">Embeding textures to EXE using the "embed" library</a></li>
             <li><a href="#building-imgui-statically">Building ImGUI statically and setting up it to the CMake project</a></li>
+            <li><a href="#setting-up-box2d">Setting up Box2D</a></li>
         </ul>
 
         <h4 id="setting-up-for-windows">Setting up SDL3 for Windows using CMake and MinGW-w64</h4>
@@ -1009,20 +1010,270 @@ void SDL_AppQuit(void *appstate)
             </li>
         </ul>
 
-        <h4>Setting up Box2D using CMakeLists.txt</h4>
+        <h4 id="setting-up-box2d">Setting up Box2D</h4>
 
         <ul>
-            <li></li>
+            <li>Download <a href="https://github.com/erincatto/box2d/releases/tag/v2.4.2" target="_blank">the Box2D 2.4.2 release</a> and unzip it</li>
+            <li>Open the console in the unzipped folder. Copy and paste the following configuration command:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake -G "MinGW Makefiles" --fresh -S . -B dist -DCMAKE_INSTALL_PREFIX=E:\libs\box2d-2.4.2-prefix -DBOX2D_BUILD_TESTBED=OFF -DBOX2D_BUILD_UNIT_TESTS=OFF</code></pre>
+            <li>Time: 5s</li>
+            <li>Copy, paste, and run the build command:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake --build dist -j4</code></pre>
+            <li>Time: 15s</li>
+            <li>Copy, paste, and run the installation command:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake --build dist -j4</code></pre>
+            <li>You can use these path in your projects:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">E:\libs\box2d-2.4.2-prefix\lib\cmake\box2d</code></pre>
+            <li>Let's create a project that will print a gravity to the console and will draw a triangle using OpenGL</li>
+            <li>Create a new empy folder and two files inside it:</li>
+            <details>
+                <summary>CMakeLists.txt (Click here to view the full content)</summary>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cmake">cmake_minimum_required(VERSION 3.20)
+
+project(print_gravity_box2d)
+add_executable(app) # WIN32
+
+target_include_directories(app PRIVATE E:/libs/glad-2.0.6/include)
+
+target_sources(app
+PRIVATE
+    E:/libs/glad-2.0.6/src/glad.c
+    main.cpp
+)
+
+# This code copies the "SDL3.dll" file to the build directory
+add_custom_command(TARGET app POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    $&lt;TARGET_RUNTIME_DLLS:app&gt; $&lt;TARGET_FILE_DIR:app&gt;
+)
+
+find_package(SDL3)
+find_package(box2d)
+target_link_libraries(app PRIVATE box2d::box2d SDL3::SDL3)
+target_compile_definitions(app PRIVATE SDL_MAIN_USE_CALLBACKS)
+
+target_link_options(app PRIVATE -static-libgcc -static-libstdc++)</code></pre>
+            </details>
+            <details>
+                <summary>main.cpp (Click here to view the full content)</summary>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-cpp">#include &lt;SDL3/SDL.h&gt;
+#include &lt;SDL3/SDL_main.h&gt;
+#include &lt;glad/glad.h&gt;
+#include &lt;box2d/box2d.h&gt;
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+b2World *world;
+
+struct AppContext
+{
+    SDL_Window *window;
+    SDL_GLContext glContext;
+    SDL_AppResult appQuit = SDL_APP_CONTINUE;
+};
+
+const char *vertexShaderSource =
+    "attribute vec2 aPosition;\n"
+    "void main()\n"
+    "{\n"
+    "    gl_Position = vec4(aPosition, 0.0, 1.0);\n"
+    "}\n";
+
+const char *fragmentShaderSource =
+    "void main()\n"
+    "{\n"
+    "    gl_FragColor = vec4(0.2, 0.7, 0.3, 1.0);\n"
+    "}\n";
+
+// Helper function for creating shaders
+GLuint createShader(const char *shaderSource, int shaderType)
+{
+    GLuint shader = glCreateShader(shaderType);
+    glShaderSource(shader, 1, &shaderSource, NULL);
+    glCompileShader(shader);
+    GLint status;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+    if (status == GL_FALSE)
+    {
+        GLint maxLength = 0;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+        std::vector&lt;GLchar&gt; errorLog(maxLength);
+        glGetShaderInfoLog(shader, maxLength, &maxLength, &errorLog[0]);
+        glDeleteShader(shader); // Don't leak the shader
+        std::cout << &(errorLog[0]) << std::endl;
+        std::cout << shaderSource << std::endl;
+    }
+    return shader;
+}
+
+// Helper function for creating a shader program
+GLuint createShaderProgram()
+{
+    GLuint program = glCreateProgram();
+    GLuint vShader = createShader(vertexShaderSource, GL_VERTEX_SHADER);
+    GLuint fShader = createShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
+
+    glAttachShader(program, vShader);
+    glAttachShader(program, fShader);
+    glLinkProgram(program);
+    glUseProgram(program);
+
+    return program;
+}
+
+// Load a triangle to the video card
+void initVertexBuffers(GLuint program)
+{
+    float vertPositions[] = {
+        -0.5f, -0.5f,
+        0.5f, -0.5f,
+        0.f, 0.5f
+    };
+    GLuint vertPosBuffer;
+    glGenBuffers(1, &vertPosBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertPosBuffer);
+    int amount = sizeof(vertPositions) / sizeof(vertPositions[0]);
+    glBufferData(GL_ARRAY_BUFFER, amount * sizeof(GLfloat),
+        vertPositions, GL_STATIC_DRAW);
+    GLint aPositionLocation = glGetAttribLocation(program, "aPosition");
+    glVertexAttribPointer(aPositionLocation, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(aPositionLocation);
+}
+
+SDL_AppResult SDL_Fail()
+{
+    SDL_LogError(SDL_LOG_CATEGORY_CUSTOM, "Error %s", SDL_GetError());
+    return SDL_APP_FAILURE;
+}
+
+SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
+{
+    // Init the library, here we make a window so we only need the Video capabilities.
+    if (SDL_Init(SDL_INIT_VIDEO))
+    {
+        return SDL_Fail();
+    }
+
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1); // Enable MULTISAMPLE
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2); // can be 2, 4, 8 or 16
+
+    // Create a window
+    SDL_Window *window = SDL_CreateWindow("SDL3, OpenGL 2.1, C++", 400, 400,
+        SDL_WINDOW_OPENGL); // | SDL_WINDOW_RESIZABLE
+    if (!window)
+    {
+        return SDL_Fail();
+    }
+
+    SDL_GLContext glContext = SDL_GL_CreateContext(window);
+    if (!glContext)
+    {
+        return SDL_Fail();
+    }
+
+    if (!gladLoadGL())
+    {
+        std::cout << "Failed to load OpenGL functions" << std::endl;
+        return SDL_APP_FAILURE;
+    }
+
+    GLuint program = createShaderProgram();
+    initVertexBuffers(program);
+
+    b2Vec2 gravity(0.f, -9.8f);
+    world = new b2World(gravity);
+    float gx = world->GetGravity().x;
+    float gy = world->GetGravity().y;
+    std::cout << "gravity = (" << gx << ", " << gy << ")" << std::endl;
+
+    SDL_ShowWindow(window);
+
+    // Set up the application data
+    *appstate = new AppContext {
+        window,
+        glContext,
+    };
+
+    return SDL_APP_CONTINUE;
+}
+
+SDL_AppResult SDL_AppEvent(void *appstate, const SDL_Event *event)
+{
+    auto *app = (AppContext *)appstate;
+
+    switch (event->type)
+    {
+        case SDL_EVENT_QUIT:
+        {
+            app->appQuit = SDL_APP_SUCCESS;
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    return SDL_APP_CONTINUE;
+}
+
+SDL_AppResult SDL_AppIterate(void *appstate)
+{
+    auto *app = (AppContext *)appstate;
+
+    glClearColor(0.188f, 0.22f, 0.255f, 1.f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    SDL_GL_SwapWindow(app->window);
+
+    return app->appQuit;
+}
+
+void SDL_AppQuit(void *appstate)
+{
+    auto *app = (AppContext *)appstate;
+    if (app)
+    {
+        SDL_GL_DestroyContext(app->glContext);
+        SDL_DestroyWindow(app->window);
+        delete app;
+    }
+
+    delete world;
+    SDL_Quit();
+}</code></pre>
+            </details>
+            <li>Open the console in the project folder</li>
+            <li>Create "dist\win" folders:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">mkdir dist\win</code></pre>
+            <li>Move to "dist" folder:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cd dist</code></pre>
+            <li>Copy, paste, and run the following command to configure:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake -G "MinGW Makefiles" --fresh -S .. -B ..\dist\win -DSDL3_DIR=E:\libs\sdl3-desktop-prefix\lib\cmake\SDL3 -Dbox2d_DIR=E:\libs\box2d-2.4.2-prefix\lib\cmake\box2d</code></pre>
+            <li>Move to the "win" folder:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cd win</code></pre>
+            <li>Type and run the following command to create the "app.exe":</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">mingw32-make</code></pre>
+            <li>Run "app.exe":</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">app</code></pre>
+            <li>Source code:</li>
+            <ul>
+                <li><a href="https://github.com/8Observer8/print-gravity-box2d-opengles20-sdl3-cpp">GitHub</a></li>
+                <li><a href="https://www.dropbox.com/scl/fi/3utlp4csboxasuc5vp8a8/print-gravity-box2d-opengles20-sdl3-cpp.zip?rlkey=6swvlr99tv3fncrlhigwa70ql&st=1lwhrvzf&raw=1">Dropbox</a> - 3.63 KB</li>
+            </ul>
+            <li><a href="https://www.dropbox.com/scl/fi/t9dgohhqwe7f26n0u3ko4/print-gravity-box2d-opengles20-sdl3-cpp-exe.zip?rlkey=jg0mjrz3ujro10abapd9f9jty&st=zfqpazin&raw=1">EXE for Windows 10, 64-bit</a> - 2.66 MB, unzipped - 4.68 MB</li>
+            <li><a href="https://www.dropbox.com/scl/fi/z0ge1ovcveugc1ct4995f/print-gravity-box2d-opengles20-sdl3-cpp.png?rlkey=suyqvtpgxzgikfu2nkj68vbab&st=kd00fc3k&raw=1" target="_blank">Screenshot</a></li>
         </ul>
 
-        <h4>Setting up Bullet Physics using CMakeLists.txt</h4>
+        <h4>Setting up Bullet Physics</h4>
 
         <ul>
             <li>
                 <details>
                     <summary>debug-drawer-desktop-opengl21-bullet-physics-sdl3-cpp</summary>
                     <ul>
-                        <li><a href="https://www.dropbox.com/scl/fi/7dfuztamujrem5x9u8gzd/debug-drawer-desktop-opengl21-bullet-physics-sdl3-cpp-exe.zip?rlkey=sj6hqe6wldym7vk9oqbsem124&st=0mb7k9xp&dl=1">EXE for Windows 10, 64-bit</a> - 3.1 MB</li>
+                        <li><a href="https://www.dropbox.com/scl/fi/7dfuztamujrem5x9u8gzd/debug-drawer-desktop-opengl21-bullet-physics-sdl3-cpp-exe.zip?rlkey=sj6hqe6wldym7vk9oqbsem124&st=0mb7k9xp&raw=1">EXE for Windows 10, 64-bit</a> - 3.1 MB</li>
                         <li><a href="https://www.dropbox.com/scl/fi/tbna5wgafj58nqy4i5bio/debug-drawer-desktop-opengl21-bullet-physics-sdl3-cpp.gif?rlkey=x1m3vvhgdflt9dkyeolsc8vz1&st=ufx2l1uh&raw=1" target="_blank">Gif-animation</a></li>
                     </ul>
                 </details>
