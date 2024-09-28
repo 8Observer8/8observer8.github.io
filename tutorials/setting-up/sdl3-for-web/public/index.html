@@ -19,10 +19,21 @@
         <br>
         <br>
 
-        <h3>Setting up SDL3 for Web</h3>
+        <h4>Setting up SDL3 for Web using CMake and MinGW-w64</h4>
 
         <ul>
-            <li>Not ready yet</li>
+            <li>Download and unzip MinGW-w64: <a href="https://winlibs.com/">https://winlibs.com/</a> I have downloaded <a href="https://github.com/brechtsanders/winlibs_mingw/releases/download/11.2.0-10.0.0-ucrt-r1/winlibs-x86_64-posix-seh-gcc-11.2.0-mingw-w64ucrt-10.0.0-r1.zip">GCC 11.2.0 + MinGW-w64 10.0.0 (UCRT) - release 1, Win64</a>. This archive contains the "mingw64" folder. Unzip the "mingw64" folder on the C drive (or on the another drive). It requires 672 MB on your hard disk</li>
+            <li>The "mingw64" folder contains the "bin" folder. Add the "C:\mingw64\bin" path to the Path environment variable</li>
+            <li>Download and install CMake: <a href="https://cmake.org/download/">https://cmake.org/download/</a> Download "Windows x64 Installer" and install it</li>
+            <li>Check that "mingw32-make" and "cmake" is available from the console:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake --version
+mingw32-make --version</code></pre>
+            <li>I use CMake v3.27.7</li>
+            <li>Download SDL3 sources from <a href="https://github.com/libsdl-org/SDL" target="_blank">GitHub</a> (Code > Download ZIP)</li>
+            <li>Unzip the downloaded archive. Open the console terminal inside the folder</li>
+            <li>Copy and paste the following command to the console for the configuration. Replace the installation path to your path if you need:</li>
+<pre class="hljs" style="white-space: pre-wrap;"><code class="language-bash">cmake -G "MinGW Makefiles" --fresh -S . -B dist -DCMAKE_INSTALL_PREFIX=E:\libs\sdl3-desktop-prefix</code></pre>
+            <li>It requires 3 minutes 20 seconds</li>
         </ul>
     </div>
 </body>
