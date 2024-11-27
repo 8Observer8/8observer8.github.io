@@ -975,7 +975,7 @@ lC.prototype.at=function(a){var c=this.a;a&&"object"===typeof a&&(a=a.a);return 
 Z.prototype.get_m_hitCollisionObject=Z.prototype.xb=function(){return k(vA(this.a),q)};Z.prototype.set_m_hitCollisionObject=Z.prototype.ie=function(a){var c=this.a;a&&"object"===typeof a&&(a=a.a);wA(c,a)};Object.defineProperty(Z.prototype,"m_hitCollisionObject",{get:Z.prototype.xb,set:Z.prototype.ie});Z.prototype.get_m_localShapeInfo=Z.prototype.Rb=function(){return k(xA(this.a),LB)};Z.prototype.set_m_localShapeInfo=Z.prototype.Ce=function(a){var c=this.a;a&&"object"===typeof a&&(a=a.a);yA(c,a)};
 Object.defineProperty(Z.prototype,"m_localShapeInfo",{get:Z.prototype.Rb,set:Z.prototype.Ce});Z.prototype.get_m_hitNormalLocal=Z.prototype.Bb=function(){return k(zA(this.a),p)};Z.prototype.set_m_hitNormalLocal=Z.prototype.me=function(a){var c=this.a;a&&"object"===typeof a&&(a=a.a);AA(c,a)};Object.defineProperty(Z.prototype,"m_hitNormalLocal",{get:Z.prototype.Bb,set:Z.prototype.me});Z.prototype.get_m_hitPointLocal=Z.prototype.Db=function(){return k(BA(this.a),p)};
 Z.prototype.set_m_hitPointLocal=Z.prototype.oe=function(a){var c=this.a;a&&"object"===typeof a&&(a=a.a);CA(c,a)};Object.defineProperty(Z.prototype,"m_hitPointLocal",{get:Z.prototype.Db,set:Z.prototype.oe});Z.prototype.get_m_hitFraction=Z.prototype.yb=function(){return DA(this.a)};Z.prototype.set_m_hitFraction=Z.prototype.je=function(a){var c=this.a;a&&"object"===typeof a&&(a=a.a);EA(c,a)};Object.defineProperty(Z.prototype,"m_hitFraction",{get:Z.prototype.yb,set:Z.prototype.je});
-Z.prototype.__destroy__=function(){FA(this.a)};(function(){function a(){b.BT_CONSTRAINT_ERP=GA();b.BT_CONSTRAINT_STOP_ERP=HA();b.BT_CONSTRAINT_CFM=IA();b.BT_CONSTRAINT_STOP_CFM=JA();b.PHY_FLOAT=KA();b.PHY_DOUBLE=LA();b.PHY_INTEGER=MA();b.PHY_SHORT=NA();b.PHY_FIXEDPOINT88=OA();b.PHY_UCHAR=PA()}Ta?a():Ra.unshift(a)})();this.Ammo=b;
+Z.prototype.__destroy__=function(){FA(this.a)};(function(){function a(){b.BT_CONSTRAINT_ERP=GA();b.BT_CONSTRAINT_STOP_ERP=HA();b.BT_CONSTRAINT_CFM=IA();b.BT_CONSTRAINT_STOP_CFM=JA();b.PHY_FLOAT=KA();b.PHY_DOUBLE=LA();b.PHY_INTEGER=MA();b.PHY_SHORT=NA();b.PHY_FIXEDPOINT88=OA();b.PHY_UCHAR=PA()}Ta?a():Ra.unshift(a)})();
 
 
   return Ammo.ready
@@ -988,4 +988,5 @@ if (typeof exports === 'object' && typeof module === 'object')
       define([], function() { return Ammo; });
     else if (typeof exports === 'object')
       exports["Ammo"] = Ammo;
-    
+
+export default Ammo;
