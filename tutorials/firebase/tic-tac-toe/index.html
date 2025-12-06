@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Tic-Tac-Toe — Tutorial (EN / RU / 中文)</title>
+
+    <!-- Bootstrap CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Small site styles */
+        body {
+            padding-top: 1.5rem;
+            padding-bottom: 3rem;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            font-size: 48px;
+            text-align: center;
+            line-height: 100px;
+            border: 1px solid #333;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 5px;
+        }
+
+        pre.code-block {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: .25rem;
+            overflow: auto;
+        }
+
+        .lang-hidden {
+            display: none;
+        }
+
+        .tutorial-col {
+            max-width: 900px;
+        }
+
+        @media (max-width: 600px) {
+            .cell {
+                width: 70px;
+                height: 70px;
+                font-size: 32px;
+                line-height: 70px;
+            }
+
+            #board {
+                grid-template-columns: repeat(3, 70px);
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header & language links -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h4">Tic-Tac-Toe — Tutorial</h1>
+            <div>
+                <!-- Links append a lang query param. They keep existing query params when possible. -->
+                <a href="?lang=en" class="btn btn-outline-primary btn-sm">English</a>
+                <a href="?lang=ru" class="btn btn-outline-primary btn-sm">Русский</a>
+                <a href="?lang=zh" class="btn btn-outline-primary btn-sm">中文</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left: tutorial -->
+            <div class="col-md-7 tutorial-col">
+                <!-- ENGLISH -->
+                <div data-lang="en" class="lang-hidden">
+                    <h2>Step-by-step tutorial (English)</h2>
+                    <p>This page contains a complete beginner-friendly tutorial that shows how to run the Tic-Tac-Toe demo locally, create a Firebase Realtime Database, and deploy to GitHub Pages or Firebase Hosting.</p>
+
+                    <h3>1) What you'll get</h3>
+                    <ul>
+                        <li>A working Tic-Tac-Toe game (browser-based) that stores its shared state in Firebase Realtime Database (RTDB).</li>
+                        <li>A static website you can host on GitHub Pages.</li>
+                    </ul>
+
+                    <h3>2) Prerequisites</h3>
+                    <ol>
+                        <li>A modern browser (Chrome, Edge, Firefox).</li>
+                        <li>Node.js & npm (for installing firebase-tools). Download from <a href="https://nodejs.org/" target="_blank" rel="noopener">nodejs.org</a>.</li>
+                        <li>git and a GitHub account (for GitHub Pages), or a Firebase project if you want to use Firebase Hosting.</li>
+                    </ol>
+
+                    <h3>3) Project files</h3>
+                    <p>Create <code>index.html</code> and <code>js/index1.js</code> with the code provided below (the game is on the right column).</p>
+
+                    <h3>4) How to run locally</h3>
+                    <p>Because the demo uses ES modules and an import map, you must serve files over HTTP. The simplest options:</p>
+                    <pre class="code-block"><code># Option A: serve with a small static server (recommended)
+npx http-server -c-1
+
+# Option B: use Python 3 (if installed)
+python -m http.server 8000
+</code></pre>
+                    <p>Open <code>http://localhost:8080</code> (or port printed by the server). The game will load.</p>
+
+                    <h3>5) Firebase setup — create a new project and enable Realtime Database</h3>
+                    <ol>
+                        <li>Go to <a href="https://console.firebase.google.com/" target="_blank" rel="noopener">Firebase Console</a> and click <strong>"Add project"</strong>. Follow the wizard to create a project.</li>
+                        <li>In the left menu choose <strong>Realtime Database</strong> → <strong>Create database</strong>. Start in test mode (for development). This sets rules to allow reads/writes temporarily — don't use test mode in production.</li>
+                        <li>In the project settings (gear icon) go to <strong>Your apps</strong> and add a Web app. You'll get a Firebase config object — copy it. Replace the example config in <code>js/index1.js</code> with yours if you want to use your own project. The demo includes an example config (for demonstration only).</li>
+                    </ol>
+
+                    <h3>6) Install firebase-tools (CLI)</h3>
+                    <p>Open a terminal and run:</p>
+                    <pre class="code-block"><code>npm install -g firebase-tools</code></pre>
+                    <p>Then login to your account:</p>
+                    <pre class="code-block"><code>firebase login</code></pre>
+                    <p>Now you can initialize Firebase Hosting inside the project folder (optional — for Firebase Hosting deploy):</p>
+                    <pre class="code-block"><code>firebase init hosting</code></pre>
+                    <p>Follow prompts: select your project, choose "public" directory as <code>public</code> (or keep root), single-page app? answer <code>N</code> because this is not a SPA routing app unless you want it, and don't overwrite your index.html if asked.</p>
+
+                    <h3>7) Deploy options</h3>
+                    <h4>A) Deploy to GitHub Pages</h4>
+                    <p>Typical steps (from project root):</p>
+                    <pre class="code-block"><code>git init
+git add .
+git commit -m "Initial commit"
+# create a repo on GitHub, then:
+git remote add origin https://github.com/USERNAME/REPO.git
+git branch -M main
+git push -u origin main
+
+# Enable GitHub Pages:
+# - In repo Settings → Pages → Source select branch 'main' and folder '/' or 'gh-pages' branch.
+</code></pre>
+                    <p>GitHub Pages will publish your site (you may need to enable Pages in repo settings). URL will be <code>https://USERNAME.github.io/REPO/</code>.</p>
+
+                    <h4>B) Deploy to Firebase Hosting</h4>
+                    <pre class="code-block"><code># after firebase init hosting
+firebase deploy --only hosting
+</code></pre>
+                    <p>Firebase will print the hosting URL where your site is available.</p>
+
+                    <h3>8) Security note</h3>
+                    <p>Using test mode for Realtime Database leaves data open for a while. For production, set proper database rules and consider using Authentication so only authorized users can change state.</p>
+
+                    <h3>9) Troubleshooting</h3>
+                    <ul>
+                        <li>If the game doesn't connect, open browser console (F12) and look for errors. Check that your Firebase config matches your project and that RTDB is enabled.</li>
+                        <li>If two players cannot join, check the data at <code>/games/game1</code> in the Realtime Database inspector in Firebase Console.</li>
+                    </ul>
+
+                    <h3>10) Source code (client)</h3>
+                    <p>Below are the two files used by the site.</p>
+                    <h5><code>index.html</code> (already this page) — the playable demo is to the right.</h5>
+
+                    <h5><code>js/index1.js</code></h5>
+                    <pre class="code-block"><code>// See the separate file js/index1.js (provided on the right column / file)
+</code></pre>
+                </div>
+
+                <!-- RUSSIAN -->
+                <div data-lang="ru" class="lang-hidden">
+                    <h2>Пошаговое руководство (Русский)</h2>
+                    <p>На этой странице — полное руководство для начинающих: запуск локально, создание Firebase Realtime Database и деплой на GitHub Pages или Firebase Hosting.</p>
+
+                    <h3>1) Что вы получите</h3>
+                    <ul>
+                        <li>Работающая игра Крестики-Нолики в браузере, состояние хранится в Firebase Realtime Database.</li>
+                        <li>Статический сайт, готовый для размещения на GitHub Pages.</li>
+                    </ul>
+
+                    <h3>2) Требования</h3>
+                    <ol>
+                        <li>Современный браузер (Chrome, Edge, Firefox).</li>
+                        <li>Node.js и npm (для установки firebase-tools). Скачать: <a href="https://nodejs.org/" target="_blank" rel="noopener">nodejs.org</a>.</li>
+                        <li>git и аккаунт GitHub (для GitHub Pages) или проект в Firebase (если вы хотите хостить на Firebase Hosting).</li>
+                    </ol>
+
+                    <h3>3) Файлы проекта</h3>
+                    <p>Создайте <code>index.html</code> и <code>js/index1.js</code> с кодом (игра находится в правой колонке).</p>
+
+                    <h3>4) Как запустить локально</h3>
+                    <p>Так как используются ES модули и importmap, файлы нужно открывать по HTTP. Самые простые варианты:</p>
+                    <pre class="code-block"><code># Вариант A: лёгкий http сервер
+npx http-server -c-1
+
+# Вариант B: Python 3 (если установлен)
+python -m http.server 8000
+</code></pre>
+                    <p>Откройте <code>http://localhost:8080</code> (или порт, который укажет сервер).</p>
+
+                    <h3>5) Настройка Firebase — проект и Realtime Database</h3>
+                    <ol>
+                        <li>Перейдите в <a href="https://console.firebase.google.com/" target="_blank" rel="noopener">Firebase Console</a>, нажмите «Add project» и создайте проект.</li>
+                        <li>В меню выберите <strong>Realtime Database</strong> → <strong>Create database</strong>. Для разработки можно выбрать test mode (временное разрешение на чтение/запись).</li>
+                        <li>В настройках проекта добавьте Web-приложение и получите конфиг — вставьте его в <code>js/index1.js</code>.</li>
+                    </ol>
+
+                    <h3>6) Установка firebase-tools</h3>
+                    <pre class="code-block"><code>npm install -g firebase-tools
+firebase login
+firebase init hosting
+</code></pre>
+
+                    <h3>7) Деплой</h3>
+                    <h4>A) GitHub Pages</h4>
+                    <pre class="code-block"><code>git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/USERNAME/REPO.git
+git branch -M main
+git push -u origin main
+# В Settings → Pages включите публикацию (branch main).
+</code></pre>
+
+                    <h4>B) Firebase Hosting</h4>
+                    <pre class="code-block"><code>firebase deploy --only hosting
+</code></pre>
+
+                    <h3>8) Безопасность</h3>
+                    <p>Test mode открывает базу данных — в продакшене настройте правила и аутентификацию.</p>
+
+                    <h3>9) Отладка</h3>
+                    <ul>
+                        <li>Откройте консоль браузера (F12) для ошибок.</li>
+                        <li>Проверяйте содержимое /games/game1 в консоли Firebase.</li>
+                    </ul>
+                </div>
+
+                <!-- CHINESE -->
+                <div data-lang="zh" class="lang-hidden">
+                    <h2>逐步教程（中文）</h2>
+                    <p>本页提供面向初学者的完整教程：在本地运行井字棋演示，创建 Firebase Realtime Database，并部署到 GitHub Pages 或 Firebase Hosting。</p>
+
+                    <h3>1）成果</h3>
+                    <ul>
+                        <li>一个将共享状态存储在 Firebase Realtime Database 中的浏览器井字棋游戏。</li>
+                        <li>一个可托管在 GitHub Pages 的静态网站。</li>
+                    </ul>
+
+                    <h3>2）先决条件</h3>
+                    <ol>
+                        <li>现代浏览器（Chrome/Edge/Firefox）。</li>
+                        <li>安装 Node.js 和 npm（用于安装 firebase-tools）。下载：<a href="https://nodejs.org/" target="_blank" rel="noopener">nodejs.org</a>。</li>
+                        <li>git 与 GitHub 账号（用于 GitHub Pages）或 Firebase 项目（用于 Firebase Hosting）。</li>
+                    </ol>
+
+                    <h3>3）项目文件</h3>
+                    <p>创建 <code>index.html</code> 与 <code>js/index1.js</code>，其代码已放在页面右侧（演示区）。</p>
+
+                    <h3>4）本地运行</h3>
+                    <p>由于使用了 ES modules 与 importmap，必须通过 HTTP 提供文件。常见方法：</p>
+                    <pre class="code-block"><code># 选项 A：使用 http-server（推荐）
+npx http-server -c-1
+
+# 选项 B：如果安装了 Python 3
+python -m http.server 8000
+</code></pre>
+
+                    <h3>5）Firebase 设置</h3>
+                    <ol>
+                        <li>访问 <a href="https://console.firebase.google.com/" target="_blank" rel="noopener">Firebase 控制台</a> 并创建项目。</li>
+                        <li>在左侧选择 <strong>Realtime Database</strong> → <strong>Create database</strong>，开发期间可选择 test mode。</li>
+                        <li>在项目设置里添加 Web 应用，复制项目配置并替换 <code>js/index1.js</code> 中的配置（如果你想使用自己的项目）。</li>
+                    </ol>
+
+                    <h3>6）安装 firebase-tools</h3>
+                    <pre class="code-block"><code>npm install -g firebase-tools
+firebase login
+firebase init hosting
+</code></pre>
+
+                    <h3>7）部署</h3>
+                    <h4>A）GitHub Pages</h4>
+                    <pre class="code-block"><code>git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/USERNAME/REPO.git
+git branch -M main
+git push -u origin main
+# 在 GitHub 仓库设置中启用 Pages（选择 main 分支）。
+</code></pre>
+
+                    <h4>B）Firebase Hosting</h4>
+                    <pre class="code-block"><code>firebase deploy --only hosting
+</code></pre>
+
+                    <h3>8）安全提醒</h3>
+                    <p>测试模式会打开数据库访问。投入生产前，请配置数据库规则与鉴权。</p>
+                </div>
+            </div>
+
+            <!-- Right: demo and code -->
+            <div class="col-md-5">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Play: Tic-Tac-Toe</h5>
+                        <p class="small text-muted mb-2">Open this page in two browser windows to play across them (each window becomes a player).</p>
+                        <div id="board" class="mb-2" aria-hidden="true"></div>
+                        <p id="status" class="fw-semibold"></p>
+                        <button id="restart" class="btn btn-sm btn-danger">Restart Game</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Files</h6>
+                        <p class="mb-1"><strong>index.html</strong> (this file) — includes UI and tutorial.</p>
+                        <p class="mb-2"><strong>js/index1.js</strong> — game logic and Firebase connector (below).</p>
+
+                        <h6 class="mt-3">js/index1.js</h6>
+                        <pre class="code-block"><code>// This is the client JS (save as js/index1.js)
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, set, get, onValue, update } from "firebase/database";
+
+const firebaseConfig = {
+    // IMPORTANT: Replace this with your own Firebase config from Project Settings -> SDK setup for web
+    apiKey: "AIzaSyAOQeReL7V3h5LtGC141xX2NtA82p9InHM",
+    authDomain: "tic-tac-toe-network-v1-0-js.firebaseapp.com",
+    databaseURL: "https://tic-tac-toe-network-v1-0-js-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "tic-tac-toe-network-v1-0-js",
+    storageBucket: "tic-tac-toe-network-v1-0-js.firebasestorage.app",
+    messagingSenderId: "966053462012",
+    appId: "1:966053462012:web:5495e05cd7220d7992bc79",
+    measurementId: "G-4H2WE6VF8L"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Game state
+const gameId = "game1"; // demo — a single shared game
+const gameRef = ref(db, "games/" + gameId);
+
+const boardDiv = document.getElementById("board");
+const status = document.getElementById("status");
+const restartBtn = document.getElementById("restart");
+
+// Generate a simple unique id for this client
+const myId = "player-" + Date.now();
+let myPlayer = null;
+
+// Initialize board UI
+const cells = [];
+for (let i = 0; i < 9; i++) {
+    const cell = document.createElement("div");
+    cell.classList.add("cell");
+    cell.dataset.index = i;
+    cell.addEventListener("click", () => makeMove(i));
+    boardDiv.appendChild(cell);
+    cells.push(cell);
+}
+
+// Initialize game in RTDB if not exists
+async function initGame() {
+    const snapshot = await get(gameRef);
+    if (!snapshot.exists()) {
+        await set(gameRef, {
+            board: ["", "", "", "", "", "", "", "", ""],
+            turn: "X",
+            winner: null
+        });
+    }
+}
+
+initGame();
+
+// Join game
+async function joinGame() {
+  const snapshot = await get(gameRef);
+  const data = snapshot.val() || {};
+
+  if (!data.playerX) {
+    myPlayer = "X";
+    await update(gameRef, { playerX: myId });
+  } else if (!data.playerO) {
+    myPlayer = "O";
+    await update(gameRef, { playerO: myId });
+  } else {
+    alert("Game is full");
+  }
+}
+
+await joinGame();
+
+restartBtn.addEventListener("click", async () => {
+  await set(gameRef, {
+    board: ["", "", "", "", "", "", "", "", ""],
+    turn: "X",
+    winner: null
+  });
+});
+
+// Listen to game changes
+onValue(gameRef, (snapshot) => {
+    const data = snapshot.val();
+    if (!data) return;
+
+    data.board.forEach((v, i) => cells[i].textContent = v);
+    if (data.winner) {
+        status.textContent = data.winner === "Draw" ? "Draw!" : `Winner: ${data.winner}`;
+    } else {
+        status.textContent = `Turn: ${data.turn}`;
+    }
+});
+
+// Make a move
+async function makeMove(index) {
+    const snapshot = await get(gameRef);
+    const data = snapshot.val();
+    if (!data || data.winner) return;
+
+    // Only current player can move
+    if (data.turn !== myPlayer) return;
+
+    // Check if cell is empty
+    if (data.board[index] !== "") return;
+
+    // Make move
+    const newBoard = [...data.board];
+    newBoard[index] = data.turn;
+
+    // Check winner
+    const winner = checkWinner(newBoard);
+
+    // Update database
+    await update(gameRef, {
+        board: newBoard,
+        turn: data.turn === "X" ? "O" : "X",
+        winner: winner
+    });
+}
+
+// Check winner
+function checkWinner(b) {
+    const lines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8], // rows
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8], // cols
+        [0, 4, 8],
+        [2, 4, 6] // diagonals
+    ];
+
+    for (const [a, b1, c] of lines) {
+        if (b[a] && b[a] === b[b1] && b[a] === b[c]) return b[a];
+    }
+    return b.includes("") ? null : "Draw";
+}
+</code></pre>
+
+                        <p class="mt-2 small text-muted">Notes:
+                        <ul>
+                            <li>The JS file uses ES modules and top-level <code>await</code>. It works in modern browsers when served via HTTP (not opened as file://).</li>
+                            <li>If you prefer not to use the included demo Firebase config, replace <code>firebaseConfig</code> with your own project's config from Firebase Console.</li>
+                        </ul>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-3 small text-muted">
+                    <p><strong>Language switch:</strong> open this page with <code>?lang=en</code>, <code>?lang=ru</code>, or <code>?lang=zh</code> to show English, Russian or Chinese tutorial content directly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import map to load firebase packages from CDN -->
+    <script type="importmap">
+        {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js",
+      "firebase/database": "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js"
+    }
+  }
+  </script>
+
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Our language switcher + app loader -->
+    <script type="module">
+        // language selection logic
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
+        function showLang(lang) {
+            const nodes = document.querySelectorAll('[data-lang]');
+            nodes.forEach(n => n.classList.add('lang-hidden'));
+            const selected = document.querySelector('[data-lang="' + lang + '"]');
+            if (selected) selected.classList.remove('lang-hidden');
+        }
+
+        // default to English
+        const lang = getQueryParam('lang') || 'en';
+        showLang(lang);
+
+        // update language links to preserve other params (but keep only lang)
+        document.querySelectorAll('a[href^="?lang="]').forEach(a => {
+            const targetLang = new URL(a.href, location.href).searchParams.get('lang');
+            const url = new URL(location.href);
+            url.search = ''; // clear query
+            url.searchParams.set('lang', targetLang);
+            a.href = url.toString();
+        });
+
+        // Load our game script (this file must exist at /js/index1.js)
+        import('./js/index1.js').catch(err => {
+            console.error('Failed to load game script:', err);
+            const status = document.getElementById('status');
+            if (status) status.textContent = 'Game script failed to load. See console for details.';
+        });
+    </script>
+</body>
+
+</html>
