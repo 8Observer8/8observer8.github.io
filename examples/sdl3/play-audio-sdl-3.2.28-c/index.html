@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .prevent-select {
+          -webkit-user-select: none; /* Safari */
+          -ms-user-select: none; /* IE 10 and IE 11 */
+          user-select: none; /* Standard syntax */
+        }
+    </style>
+</head>
+
+<body style="caret-color: transparent;">
+    <h3 class="prevent-select">Click on the canvas to play a sound</h3>
+
+    <canvas id="canvas"></canvas>
+
+    <p class="prevent-select">Assets:</p>
+
+    <ul>
+        <li class="prevent-select"><a href="https://opengameart.org/content/picked-coin-echo-2" target="_blank">Free sound file</a></li>
+    </ul>
+
+    <p class="prevent-select">Source code: <a href="https://github.com/8Observer8/play-audio-sdl-3.2.28-c" target="_blank">GitHub repository</a></p>
+
+    <p class="prevent-select">EXE: <a href="https://www.dropbox.com/scl/fi/0qtdgo6zs478r7532ukxm/play-audio-sdl-3-2-28-c-exe.zip?rlkey=v62lx7qiuhsad68ripdgvqs6n&st=0xq2d3hy&raw=1" target="_blank">play-audio-sdl3-c-exe.zip</a> (zip - 1.99 MB, unzipped - 4.45 MB)</p>
+
+    <script async src="./js/app.js"></script>
+    <script>
+        const canvas = document.getElementById("canvas");
+        canvas.oncontextmenu = event => { event.preventDefault(); return false; };
+    </script>
+</body>
+
+</html>
