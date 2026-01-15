@@ -57,7 +57,9 @@ function init() {
 
     // When the user clicks the overlay, lock the pointer
     instructions.addEventListener("click", () => {
-        controls.lock();
+        if (!controls.isLocked) {
+            controls.lock();
+        }
     });
 
     // Hide overlay when locked
