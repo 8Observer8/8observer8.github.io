@@ -78,9 +78,8 @@ function init() {
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectMatrix();
+    camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    controls.handleResize(); // Necessary for FirstPersonControls
 }
 
 function onKeyDown(event) {
