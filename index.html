@@ -7,8 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirecting to Ivan Enzhaev</title>
 
-    <meta http-equiv="refresh" content="0; url=https://ivan-enzhaev.github.io/">
-
     <link rel="canonical" href="https://ivan-enzhaev.github.io/">
 
     <style>
@@ -42,16 +40,28 @@
 
 <body>
 
-    <div class="container">
+    <!-- <div class="container">
         <h1>Moving to a new home...</h1>
         <p>This profile has rebranded. You are being redirected to:</p>
         <p><strong><a href="https://ivan-enzhaev.github.io/">ivan-enzhaev.github.io</a></strong></p>
         <p>If you are not redirected in a few seconds, please click the link above.</p>
-    </div>
+    </div> -->
+
+    <p>Redirecting to the new location of this tutorial...</p>
+    <p>If you are not redirected, <a id="manual-link" href="https://ivan-enzhaev.github.io/">click here</a>.</p>
+    <script>
+        document.getElementById('manual-link').href = "https://ivan-enzhaev.github.io" + window.location.pathname;
+    </script>
 
     <script>
-        window.location.href = "https://ivan-enzhaev.github.io/";
+        // Get the current path
+        const oldPath = window.location.pathname;
 
+        // Define the new base URL
+        const newBase = "https://ivan-enzhaev.github.io";
+        
+        // Redirect to the same path on the new domain
+        window.location.href = newBase + oldPath;
     </script>
 
 </body>
